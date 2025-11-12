@@ -5,7 +5,8 @@ import {
   faEdit, 
   faTrash, 
   faSignOutAlt, 
-  faTimes 
+  faTimes,
+  faBoxOpen
 } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from '../../context/AuthContext'
 import { formatPrice } from '../../utils/formatters'
@@ -23,7 +24,7 @@ function AdminDashboard() {
       category: 'Hombre',
       price: 3299,
       image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
-      description: 'Diseño revolucionario con amortiguación Air Max visible.'
+      description: 'Diseño revolucionario con amortiguación Air Max visible. Perfecto para uso diario y deportivo.'
     },
     {
       id: 2,
@@ -32,7 +33,16 @@ function AdminDashboard() {
       category: 'Hombre',
       price: 2899,
       image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
-      description: 'Tecnología Boost para máxima comodidad.'
+      description: 'Tecnología Boost para máxima comodidad. Ideal para correr y actividades diarias.'
+    },
+    {
+      id: 3,
+      brand: 'Nike',
+      model: 'Air Force 1',
+      category: 'Mujer',
+      price: 2599,
+      image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500&h=500&fit=crop',
+      description: 'Clásico absoluto de Nike. Perfecto para combinar con cualquier outfit.'
     }
   ])
 
@@ -46,7 +56,9 @@ function AdminDashboard() {
     image: '',
     description: ''
   })
+  const [errors, setErrors] = useState({})
 
+  // Cerrar sesión
   const handleLogout = () => {
     if (window.confirm('¿Estás seguro de cerrar sesión?')) {
       logout()
@@ -54,6 +66,7 @@ function AdminDashboard() {
     }
   }
 
+  // Abrir modal para agregar
   const openAddModal = () => {
     setEditingProduct(null)
     setFormData({
@@ -64,9 +77,11 @@ function AdminDashboard() {
       image: '',
       description: ''
     })
+    setErrors({})
     setIsModalOpen(true)
   }
 
+  // Abrir modal para editar
   const openEditModal = (product) => {
     setEditingProduct(product)
     setFormData({
@@ -77,37 +92,80 @@ function AdminDashboard() {
       image: product.image,
       description: product.description
     })
+    setErrors({})
     setIsModalOpen(true)
   }
 
+  // Cerrar modal
   const closeModal = () => {
     setIsModalOpen(false)
     setEditingProduct(null)
+    setFormData({
+      brand: '',
+      model: '',
+      category: 'Hombre',
+      price: '',
+      image: '',
+      description: ''
+    })
+    setErrors({})
   }
 
+  // Manejar cambios en inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
     }))
+    // Limpiar error del campo cuando el usuario empieza a escribir
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }))
+    }
   }
 
-  const handleSubmit = () => {
-    // Validaciones
-    if (!formData.brand || !formData.model || !formData.price) {
-      alert('Por favor completa los campos obligatorios')
-      return
+  // Validar formulario
+  const validateForm = () => {
+    const newErrors = {}
+
+    if (!formData.brand.trim()) {
+      newErrors.brand = 'La marca es requerida'
     }
+
+    if (!formData.model.trim()) {
+      newErrors.model = 'El modelo es requerido'
+    }
+
+    if (!formData.price) {
+      newErrors.price = 'El precio es requerido'
+    } else {
+      const price = parseFloat(formData.price)
+      if (isNaN(price) || price <= 0) {
+        newErrors.price = 'Por favor ingresa un precio válido (mayor a 0)'
+      }
+    }
+
+    if (!formData.description.trim()) {
+      newErrors.description = 'La descripción es requerida'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  // Enviar formulario
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (!validateForm()) return
 
     const price = parseFloat(formData.price)
-    if (isNaN(price) || price <= 0) {
-      alert('Por favor ingresa un precio válido')
-      return
-    }
 
     if (editingProduct) {
-      // Editar producto existente
+      // Editar producto
       setProducts(prev => prev.map(p => 
         p.id === editingProduct.id
           ? {
@@ -121,11 +179,11 @@ function AdminDashboard() {
             }
           : p
       ))
-      alert('Producto actualizado exitosamente')
+      alert('✓ Producto actualizado exitosamente')
     } else {
       // Crear nuevo producto
       const newProduct = {
-        id: Date.now(),
+        id: Math.max(0, ...products.map(p => p.id)) + 1,
         brand: formData.brand,
         model: formData.model,
         category: formData.category,
@@ -134,29 +192,38 @@ function AdminDashboard() {
         description: formData.description
       }
       setProducts(prev => [...prev, newProduct])
-      alert('Producto agregado exitosamente')
+      alert('✓ Producto agregado exitosamente')
     }
 
     closeModal()
   }
 
+  // Eliminar producto
   const handleDelete = (id) => {
-    if (window.confirm('¿Estás seguro de eliminar este producto?')) {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       setProducts(prev => prev.filter(p => p.id !== id))
-      alert('Producto eliminado exitosamente')
+      alert('✓ Producto eliminado exitosamente')
     }
+  }
+
+  // Estadísticas
+  const stats = {
+    total: products.length,
+    hombre: products.filter(p => p.category === 'Hombre').length,
+    mujer: products.filter(p => p.category === 'Mujer').length,
+    gorras: products.filter(p => p.category === 'Gorras').length
   }
 
   return (
     <div className="admin-dashboard">
       
-      {/* Header */}
+      {/* ===== HEADER ===== */}
       <header className="admin-header">
         <div className="container">
           <div className="admin-header-content">
             <div className="admin-title-section">
               <h1 className="admin-title">Panel de Administración</h1>
-              <p className="admin-subtitle">Gestiona tus productos</p>
+              <p className="admin-subtitle">Gestiona tus productos de forma fácil y rápida</p>
             </div>
 
             <div className="admin-user-info">
@@ -167,7 +234,7 @@ function AdminDashboard() {
                 <p className="user-name">{user?.name || 'Administrador'}</p>
                 <p className="user-role">{user?.role || 'Admin'}</p>
               </div>
-              <button onClick={handleLogout} className="btn-logout">
+              <button onClick={handleLogout} className="btn-logout" aria-label="Cerrar sesión">
                 <FontAwesomeIcon icon={faSignOutAlt} />
                 <span>Cerrar Sesión</span>
               </button>
@@ -176,28 +243,28 @@ function AdminDashboard() {
         </div>
       </header>
 
-      {/* Content */}
+      {/* ===== CONTENIDO ===== */}
       <div className="admin-content">
         <div className="container">
           
-          {/* Actions */}
+          {/* ===== ACCIONES Y ESTADÍSTICAS ===== */}
           <div className="admin-actions">
             <div className="admin-stats">
               <div className="stat-card">
-                <span className="stat-value">{products.length}</span>
-                <span className="stat-label">Productos</span>
+                <span className="stat-value">{stats.total}</span>
+                <span className="stat-label">Productos Total</span>
               </div>
               <div className="stat-card">
-                <span className="stat-value">
-                  {products.filter(p => p.category === 'Hombre').length}
-                </span>
+                <span className="stat-value">{stats.hombre}</span>
                 <span className="stat-label">Hombre</span>
               </div>
               <div className="stat-card">
-                <span className="stat-value">
-                  {products.filter(p => p.category === 'Mujer').length}
-                </span>
+                <span className="stat-value">{stats.mujer}</span>
                 <span className="stat-label">Mujer</span>
+              </div>
+              <div className="stat-card">
+                <span className="stat-value">{stats.gorras}</span>
+                <span className="stat-label">Gorras</span>
               </div>
             </div>
 
@@ -207,7 +274,7 @@ function AdminDashboard() {
             </button>
           </div>
 
-          {/* Products Table */}
+          {/* ===== TABLA DE PRODUCTOS ===== */}
           <div className="products-table-container">
             {products.length > 0 ? (
               <table className="products-table">
@@ -229,6 +296,7 @@ function AdminDashboard() {
                           src={product.image} 
                           alt={product.model}
                           className="product-thumbnail"
+                          loading="lazy"
                         />
                       </td>
                       <td className="product-name-cell">{product.brand}</td>
@@ -242,6 +310,7 @@ function AdminDashboard() {
                           <button 
                             onClick={() => openEditModal(product)}
                             className="btn-action btn-edit"
+                            title="Editar producto"
                           >
                             <FontAwesomeIcon icon={faEdit} />
                             <span>Editar</span>
@@ -249,6 +318,7 @@ function AdminDashboard() {
                           <button 
                             onClick={() => handleDelete(product.id)}
                             className="btn-action btn-delete"
+                            title="Eliminar producto"
                           >
                             <FontAwesomeIcon icon={faTrash} />
                             <span>Eliminar</span>
@@ -261,10 +331,12 @@ function AdminDashboard() {
               </table>
             ) : (
               <div className="empty-state">
-                <div className="empty-state-icon">📦</div>
+                <div className="empty-state-icon">
+                  <FontAwesomeIcon icon={faBoxOpen} />
+                </div>
                 <h3 className="empty-state-title">No hay productos</h3>
                 <p className="empty-state-text">
-                  Agrega tu primer producto para comenzar
+                  Agrega tu primer producto haciendo clic en "Agregar Producto"
                 </p>
               </div>
             )}
@@ -272,7 +344,7 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* ===== MODAL ===== */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -280,100 +352,160 @@ function AdminDashboard() {
               <h2 className="modal-title">
                 {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
               </h2>
-              <button onClick={closeModal} className="btn-close-modal">
+              <button onClick={closeModal} className="btn-close-modal" aria-label="Cerrar">
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
 
-            <div className="modal-body">
-              <div className="product-form">
-                
-                <div className="form-group">
-                  <label className="form-label">Marca *</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    className="form-input"
-                    placeholder="Nike, Adidas, etc."
-                    value={formData.brand}
-                    onChange={handleInputChange}
-                  />
-                </div>
+            <form onSubmit={handleSubmit} noValidate>
+              <div className="modal-body">
+                <div className="product-form">
+                  
+                  {/* Marca */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="brand">
+                      Marca *
+                    </label>
+                    <input
+                      id="brand"
+                      type="text"
+                      name="brand"
+                      className="form-input"
+                      placeholder="Nike, Adidas, etc."
+                      value={formData.brand}
+                      onChange={handleInputChange}
+                      aria-invalid={!!errors.brand}
+                      aria-describedby={errors.brand ? 'brand-error' : undefined}
+                    />
+                    {errors.brand && (
+                      <span id="brand-error" style={{ color: 'var(--error)', fontSize: 'var(--fs-xs)', marginTop: '4px' }}>
+                        {errors.brand}
+                      </span>
+                    )}
+                  </div>
 
-                <div className="form-group">
-                  <label className="form-label">Modelo *</label>
-                  <input
-                    type="text"
-                    name="model"
-                    className="form-input"
-                    placeholder="Air Max 270"
-                    value={formData.model}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                  {/* Modelo */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="model">
+                      Modelo *
+                    </label>
+                    <input
+                      id="model"
+                      type="text"
+                      name="model"
+                      className="form-input"
+                      placeholder="Air Max 270"
+                      value={formData.model}
+                      onChange={handleInputChange}
+                      aria-invalid={!!errors.model}
+                      aria-describedby={errors.model ? 'model-error' : undefined}
+                    />
+                    {errors.model && (
+                      <span id="model-error" style={{ color: 'var(--error)', fontSize: 'var(--fs-xs)', marginTop: '4px' }}>
+                        {errors.model}
+                      </span>
+                    )}
+                  </div>
 
-                <div className="form-group">
-                  <label className="form-label">Categoría</label>
-                  <select
-                    name="category"
-                    className="form-input"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                  >
-                    <option value="Hombre">Hombre</option>
-                    <option value="Mujer">Mujer</option>
-                    <option value="Gorras">Gorras</option>
-                  </select>
-                </div>
+                  {/* Categoría */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="category">
+                      Categoría
+                    </label>
+                    <select
+                      id="category"
+                      name="category"
+                      className="form-input"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                    >
+                      <option value="Hombre">Hombre</option>
+                      <option value="Mujer">Mujer</option>
+                      <option value="Gorras">Gorras</option>
+                    </select>
+                  </div>
 
-                <div className="form-group">
-                  <label className="form-label">Precio (MXN) *</label>
-                  <input
-                    type="number"
-                    name="price"
-                    className="form-input"
-                    placeholder="2999"
-                    min="0"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                  {/* Precio */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="price">
+                      Precio (MXN) *
+                    </label>
+                    <input
+                      id="price"
+                      type="number"
+                      name="price"
+                      className="form-input"
+                      placeholder="2999"
+                      min="0"
+                      step="1"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      aria-invalid={!!errors.price}
+                      aria-describedby={errors.price ? 'price-error' : undefined}
+                    />
+                    {errors.price && (
+                      <span id="price-error" style={{ color: 'var(--error)', fontSize: 'var(--fs-xs)', marginTop: '4px' }}>
+                        {errors.price}
+                      </span>
+                    )}
+                  </div>
 
-                <div className="form-group">
-                  <label className="form-label">URL de Imagen</label>
-                  <input
-                    type="url"
-                    name="image"
-                    className="form-input"
-                    placeholder="https://ejemplo.com/imagen.jpg"
-                    value={formData.image}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                  {/* URL de Imagen */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="image">
+                      URL de Imagen (Opcional)
+                    </label>
+                    <input
+                      id="image"
+                      type="url"
+                      name="image"
+                      className="form-input"
+                      placeholder="https://ejemplo.com/imagen.jpg"
+                      value={formData.image}
+                      onChange={handleInputChange}
+                    />
+                  </div>
 
-                <div className="form-group">
-                  <label className="form-label">Descripción</label>
-                  <textarea
-                    name="description"
-                    className="form-input"
-                    placeholder="Descripción del producto..."
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    rows={4}
-                  />
+                  {/* Descripción */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="description">
+                      Descripción *
+                    </label>
+                    <textarea
+                      id="description"
+                      name="description"
+                      className="form-input"
+                      placeholder="Describe tu producto aquí..."
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      aria-invalid={!!errors.description}
+                      aria-describedby={errors.description ? 'description-error' : undefined}
+                    />
+                    {errors.description && (
+                      <span id="description-error" style={{ color: 'var(--error)', fontSize: 'var(--fs-xs)', marginTop: '4px' }}>
+                        {errors.description}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="modal-actions">
-              <button onClick={closeModal} className="btn-cancel">
-                Cancelar
-              </button>
-              <button onClick={handleSubmit} className="btn-save">
-                {editingProduct ? 'Guardar Cambios' : 'Crear Producto'}
-              </button>
-            </div>
+              <div className="modal-actions">
+                <button 
+                  type="button"
+                  onClick={closeModal} 
+                  className="btn-cancel"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn-save"
+                >
+                  {editingProduct ? 'Guardar Cambios' : 'Crear Producto'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

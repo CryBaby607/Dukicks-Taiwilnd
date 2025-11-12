@@ -1,12 +1,12 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import './config/fontawesome'
 import './styles/variables.css'
 import './styles/typography.css'
 import './styles/global.css'
 
 import { CartProvider } from './context/CartContext'
-import { AuthProvider } from './context/AuthContext' // ⬅️ NUEVO
-import PrivateRoute from './components/PrivateRoute/PrivateRoute' // ⬅️ NUEVO
+import { AuthProvider } from './context/AuthContext'
+import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
@@ -16,15 +16,20 @@ import Mujer from './pages/Category/Mujer'
 import Gorras from './pages/Category/Gorras'
 import Cart from './pages/Cart/Cart'
 import ProductDetail from './pages/ProductDetail/ProductDetail'
-import Login from './pages/Login/Login' // ⬅️ NUEVO
-import AdminDashboard from './pages/AdminDashboard/AdminDashboard' // ⬅️ NUEVO
+import Login from './pages/Login/Login'
+import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 
 export default function App() {
+  const location = useLocation()
+
+  // Ocultar Header y Footer en rutas específicas
+  const hideLayout = location.pathname === '/login' || location.pathname.startsWith('/admin')
+
   return (
-    <AuthProvider> {/* ⬅️ NUEVO: Envolver con AuthProvider */}
+    <AuthProvider>
       <CartProvider>
         <div>
-          <Header />
+          {!hideLayout && <Header />}
           <main>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -34,10 +39,10 @@ export default function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/product/:id" element={<ProductDetail />} />
               
-              {/* ⬅️ NUEVO: Ruta de Login */}
+              {/* Ruta de Login */}
               <Route path="/login" element={<Login />} />
               
-              {/* ⬅️ NUEVO: Ruta protegida del Admin */}
+              {/* Ruta protegida del Admin */}
               <Route 
                 path="/admin" 
                 element={
@@ -48,7 +53,7 @@ export default function App() {
               />
             </Routes>
           </main>
-          <Footer />
+          {!hideLayout && <Footer />}
         </div>
       </CartProvider>
     </AuthProvider>
