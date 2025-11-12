@@ -1,0 +1,83 @@
+:root {
+  /* === Colores primarios === */
+  --primary: #111111;
+  --secondary: #2563EB;
+  --accent: #3a86ff;
+  --light: #f8f9fa;
+  --gray: #6c757d;
+  --dark-gray: #343a40;
+  --white: #ffffff;
+
+  /* === Colores de estado === */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #06b6d4;
+
+  /* === Tipografías === */
+  --font-text: 'Montserrat', sans-serif;
+  --font-title: 'Oswald', sans-serif;
+
+  /* === Tamaños de fuente === */
+  --fs-xs: 0.75rem;       /* 12px */
+  --fs-sm: 0.875rem;      /* 14px */
+  --fs-base: 1rem;        /* 16px */
+  --fs-lg: 1.125rem;      /* 18px */
+  --fs-xl: 1.25rem;       /* 20px */
+  --fs-2xl: 1.5rem;       /* 24px */
+  --fs-3xl: 1.875rem;     /* 30px */
+  --fs-4xl: 2.25rem;      /* 36px */
+  --fs-5xl: 3rem;         /* 48px */
+
+  /* === Pesos de fuente === */
+  --fw-light: 300;
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* === Espaciados === */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+
+  /* === Radio de borde === */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* === Sombras === */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* === Transiciones === */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+
+  /* === Breakpoints === */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* === Z-index === */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
