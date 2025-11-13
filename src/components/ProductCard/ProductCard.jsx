@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom' // ⬅️ Importar Link
 import { formatPrice } from '../../utils/formatters'
-import { getPriceWithDiscount } from '../../data/Products'
 import './ProductCard.css'
 
 function ProductCard({ 
