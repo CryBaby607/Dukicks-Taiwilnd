@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom' // ⬅️ Importar Link
+import { Link } from 'react-router-dom'
 import { formatPrice } from '../../utils/formatters'
 import './ProductCard.css'
 
@@ -8,12 +8,20 @@ function ProductCard({
   showCategory = true
 }) {
 
+  // Función para calcular precio con descuento
+  const getPriceWithDiscount = (product) => {
+    if (!product.discount || product.discount === 0) return product.price
+    return Math.round(product.price * (1 - product.discount / 100))
+  }
+
   const finalPrice = product.discount > 0 
     ? getPriceWithDiscount(product)
     : product.price
+    
   const productName = product.brand 
     ? `${product.brand} ${product.model}` 
     : product.name
+    
   const productImage = Array.isArray(product.images) 
     ? product.images[0] 
     : product.image

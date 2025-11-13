@@ -7,7 +7,8 @@ import {
   faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '../../context/CartContext'
-import { getAllProducts } from '../../utils/productService'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../../config/firebase'
 import { formatPrice } from '../../utils/formatters'
 import './ProductDetail.css'
 
@@ -34,16 +35,22 @@ function ProductDetail() {
       setLoading(true)
       setError(null)
       
-      const allProducts = await getAllProducts()
-      const found = allProducts.find(p => p.id === id)
+      // Obtener el producto directamente de Firestore usando el ID
+      const productRef = doc(db, 'products', id)
+      const productSnap = await getDoc(productRef)
       
-      if (!found) {
+      if (!productSnap.exists()) {
         setError('Producto no encontrado')
         setTimeout(() => navigate('/'), 2000)
         return
       }
       
-      setProduct(found)
+      const productData = {
+        id: productSnap.id,
+        ...productSnap.data()
+      }
+      
+      setProduct(productData)
       setSelectedImage(0)
       setSelectedSize(null)
       setQuantity(1)
