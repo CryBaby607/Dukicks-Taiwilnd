@@ -18,15 +18,19 @@ function AdminDashboard() {
   
   // Estado inicial con productos importados de Products.js
   const [products, setProducts] = useState(() => {
-    // Mapear los productos para asegurar que tengan todos los campos necesarios
     return mockProducts.map(product => ({
       id: product.id,
       brand: product.brand || '',
       model: product.model || '',
       category: product.category || '',
       price: product.price || 0,
+      discount: product.discount || 0,
       image: Array.isArray(product.images) ? product.images[0] : product.image,
-      description: product.description || ''
+      images: product.images || [],
+      description: product.description || '',
+      isNew: product.isNew || false,
+      inStock: product.inStock !== false,
+      sizes: product.sizes || []
     }))
   })
 
@@ -37,8 +41,12 @@ function AdminDashboard() {
     model: '',
     category: 'Hombre',
     price: '',
+    discount: '',
+    description: '',
     image: '',
-    description: ''
+    isNew: false,
+    inStock: true,
+    sizes: ''
   })
   const [errors, setErrors] = useState({})
 
@@ -58,8 +66,12 @@ function AdminDashboard() {
       model: '',
       category: 'Hombre',
       price: '',
+      discount: '',
+      description: '',
       image: '',
-      description: ''
+      isNew: false,
+      inStock: true,
+      sizes: ''
     })
     setErrors({})
     setIsModalOpen(true)
@@ -73,8 +85,12 @@ function AdminDashboard() {
       model: product.model,
       category: product.category,
       price: product.price.toString(),
+      discount: product.discount?.toString() || '0',
+      description: product.description,
       image: product.image,
-      description: product.description
+      isNew: product.isNew || false,
+      inStock: product.inStock !== false,
+      sizes: Array.isArray(product.sizes) ? product.sizes.join(', ') : ''
     })
     setErrors({})
     setIsModalOpen(true)
@@ -89,18 +105,22 @@ function AdminDashboard() {
       model: '',
       category: 'Hombre',
       price: '',
+      discount: '',
+      description: '',
       image: '',
-      description: ''
+      isNew: false,
+      inStock: true,
+      sizes: ''
     })
     setErrors({})
   }
 
   // Manejar cambios en inputs
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value, type, checked } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }))
     // Limpiar error del campo cuando el usuario empieza a escribir
     if (errors[name]) {
@@ -136,8 +156,25 @@ function AdminDashboard() {
       newErrors.description = 'La descripción es requerida'
     }
 
+    if (formData.discount !== '') {
+      const discount = parseFloat(formData.discount)
+      if (isNaN(discount) || discount < 0 || discount > 100) {
+        newErrors.discount = 'El descuento debe ser entre 0 y 100'
+      }
+    }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
+  }
+
+  // Parsear tallas desde string
+  const parseSizes = (sizesString) => {
+    if (!sizesString.trim()) return []
+    return sizesString
+      .split(',')
+      .map(s => s.trim())
+      .filter(s => s)
+      .map(s => isNaN(s) ? s : parseInt(s))
   }
 
   // Enviar formulario
@@ -147,6 +184,7 @@ function AdminDashboard() {
     if (!validateForm()) return
 
     const price = parseFloat(formData.price)
+    const discount = formData.discount ? parseFloat(formData.discount) : 0
 
     if (editingProduct) {
       // Editar producto
@@ -158,8 +196,12 @@ function AdminDashboard() {
               model: formData.model,
               category: formData.category,
               price: price,
+              discount: discount,
               image: formData.image || p.image,
-              description: formData.description
+              description: formData.description,
+              isNew: formData.isNew,
+              inStock: formData.inStock,
+              sizes: parseSizes(formData.sizes)
             }
           : p
       ))
@@ -173,8 +215,13 @@ function AdminDashboard() {
         model: formData.model,
         category: formData.category,
         price: price,
+        discount: discount,
         image: formData.image || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
-        description: formData.description
+        images: [formData.image || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop'],
+        description: formData.description,
+        isNew: formData.isNew,
+        inStock: formData.inStock,
+        sizes: parseSizes(formData.sizes)
       }
       setProducts(prev => [...prev, newProduct])
       alert('✓ Producto agregado exitosamente')
@@ -196,7 +243,8 @@ function AdminDashboard() {
     total: products.length,
     hombre: products.filter(p => p.category === 'Hombre').length,
     mujer: products.filter(p => p.category === 'Mujer').length,
-    gorras: products.filter(p => p.category === 'Gorras').length
+    gorras: products.filter(p => p.category === 'Gorras').length,
+    conDescuento: products.filter(p => p.discount > 0).length
   }
 
   return (
@@ -251,6 +299,10 @@ function AdminDashboard() {
                 <span className="stat-value">{stats.gorras}</span>
                 <span className="stat-label">Gorras</span>
               </div>
+              <div className="stat-card">
+                <span className="stat-value">{stats.conDescuento}</span>
+                <span className="stat-label">Con Descuento</span>
+              </div>
             </div>
 
             <button onClick={openAddModal} className="btn-add-product">
@@ -270,6 +322,8 @@ function AdminDashboard() {
                     <th>Modelo</th>
                     <th>Categoría</th>
                     <th>Precio</th>
+                    <th>Descuento</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -289,6 +343,33 @@ function AdminDashboard() {
                       <td>{product.category}</td>
                       <td className="product-price-cell">
                         {formatPrice(product.price)}
+                      </td>
+                      <td>
+                        {product.discount > 0 ? (
+                          <span className="state-badge state-badge-with-discount">
+                            -{product.discount}%
+                          </span>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          {product.isNew && (
+                            <span className="state-badge state-badge-new">
+                              NUEVO
+                            </span>
+                          )}
+                          {product.inStock ? (
+                            <span className="state-badge state-badge-in-stock">
+                              En stock
+                            </span>
+                          ) : (
+                            <span className="state-badge state-badge-out-of-stock">
+                              Agotado
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td>
                         <div className="product-actions">
@@ -435,6 +516,31 @@ function AdminDashboard() {
                     )}
                   </div>
 
+                  {/* Descuento */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="discount">
+                      Descuento (%) (Opcional)
+                    </label>
+                    <input
+                      id="discount"
+                      type="number"
+                      name="discount"
+                      className="form-input"
+                      placeholder="10"
+                      min="0"
+                      max="100"
+                      value={formData.discount}
+                      onChange={handleInputChange}
+                      aria-invalid={!!errors.discount}
+                      aria-describedby={errors.discount ? 'discount-error' : undefined}
+                    />
+                    {errors.discount && (
+                      <span id="discount-error" style={{ color: 'var(--error)', fontSize: 'var(--fs-xs)', marginTop: '4px' }}>
+                        {errors.discount}
+                      </span>
+                    )}
+                  </div>
+
                   {/* URL de Imagen */}
                   <div className="form-group">
                     <label className="form-label" htmlFor="image">
@@ -447,6 +553,22 @@ function AdminDashboard() {
                       className="form-input"
                       placeholder="https://ejemplo.com/imagen.jpg"
                       value={formData.image}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+
+                  {/* Tallas */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="sizes">
+                      Tallas (Separadas por coma, ej: 36, 37, 38)
+                    </label>
+                    <input
+                      id="sizes"
+                      type="text"
+                      name="sizes"
+                      className="form-input"
+                      placeholder="36, 37, 38, 39, 40"
+                      value={formData.sizes}
                       onChange={handleInputChange}
                     />
                   </div>
@@ -471,6 +593,36 @@ function AdminDashboard() {
                         {errors.description}
                       </span>
                     )}
+                  </div>
+
+                  {/* Checkbox: Es Nuevo */}
+                  <div className="form-group">
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', margin: 0 }}>
+                      <input
+                        type="checkbox"
+                        name="isNew"
+                        checked={formData.isNew}
+                        onChange={handleInputChange}
+                      />
+                      <span style={{ fontSize: 'var(--fs-base)', fontWeight: 'var(--fw-normal)', color: 'var(--primary)' }}>
+                        Marcar como NUEVO
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Checkbox: En Stock */}
+                  <div className="form-group">
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', margin: 0 }}>
+                      <input
+                        type="checkbox"
+                        name="inStock"
+                        checked={formData.inStock}
+                        onChange={handleInputChange}
+                      />
+                      <span style={{ fontSize: 'var(--fs-base)', fontWeight: 'var(--fw-normal)', color: 'var(--primary)' }}>
+                        Disponible en stock
+                      </span>
+                    </label>
                   </div>
                 </div>
               </div>
