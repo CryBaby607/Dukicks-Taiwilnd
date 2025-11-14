@@ -2,15 +2,10 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getFeaturedProducts } from '../../utils/productService'
 import ProductCard from '../../components/ProductCard/ProductCard'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import './Home.css'
 
 function Home() {
-  const [newsletterEmail, setNewsletterEmail] = useState('')
   const [featuredProducts, setFeaturedProducts] = useState([])
-  const [loadingProducts, setLoadingProducts] = useState(true)
-  const [error, setError] = useState(null)
 
   // Cargar productos destacados al montar
   useEffect(() => {
@@ -18,17 +13,8 @@ function Home() {
   }, [])
 
   const loadFeaturedProducts = async () => {
-    try {
-      setLoadingProducts(true)
-      setError(null)
-      const products = await getFeaturedProducts()
-      setFeaturedProducts(products)
-    } catch (err) {
-      console.error('Error cargando productos destacados:', err)
-      setError('Error al cargar los productos')
-    } finally {
-      setLoadingProducts(false)
-    }
+    const products = await getFeaturedProducts()
+    setFeaturedProducts(products)
   }
 
   // Datos de categorías
@@ -52,15 +38,6 @@ function Home() {
       link: '/gorras'
     }
   ]
-
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault()
-    if (newsletterEmail) {
-      console.log('Email suscrito:', newsletterEmail)
-      alert('¡Gracias por suscribirte a nuestro newsletter!')
-      setNewsletterEmail('')
-    }
-  }
 
   return (
     <div className="home">
@@ -91,26 +68,24 @@ function Home() {
             <h2 className="section-title">Productos Destacados</h2>
           </div>
           {/* Products Grid */}
-          {!loadingProducts && !error && (
-            <div className="products-grid">
-              {featuredProducts.length > 0 ? (
-                featuredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    variant="featured"
-                    showCategory={true}
-                  />
-                ))
-              ) : (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
-                  <p style={{ fontSize: '18px', color: '#6c757d' }}>
-                    No hay productos destacados disponibles
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+          <div className="products-grid">
+            {featuredProducts.length > 0 ? (
+              featuredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  variant="featured"
+                  showCategory={true}
+                />
+              ))
+            ) : (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>
+                <p style={{ fontSize: '18px', color: '#6c757d' }}>
+                  No hay productos destacados disponibles
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
@@ -181,41 +156,6 @@ function Home() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== NEWSLETTER ===== */}
-      <section className="newsletter">
-        <div className="container">
-          <div className="newsletter-content">
-            <div className="newsletter-text">
-              <h2 className="newsletter-title">Únete a la comunidad DUKICKS</h2>
-              <p className="newsletter-description">
-                Suscríbete y recibe ofertas exclusivas, lanzamientos anticipados y contenido especial directo en tu inbox.
-              </p>
-            </div>
-            
-            <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
-              <div className="newsletter-input-group">
-                <input
-                  type="email"
-                  placeholder="Tu correo electrónico"
-                  className="newsletter-input"
-                  aria-label="Correo electrónico para newsletter"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  required
-                />
-                <button
-                  type="submit"
-                  className="newsletter-btn"
-                  aria-label="Suscribirse al newsletter"
-                >
-                  Suscribirme
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       </section>
