@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faShoppingCart, 
-  faCheck,
-  faSpinner
+  faShoppingCart
 } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '../../context/CartContext'
 import { doc, getDoc } from 'firebase/firestore'
@@ -21,8 +19,6 @@ function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   // Cargar producto al montar o cambiar ID
@@ -32,7 +28,6 @@ function ProductDetail() {
 
   const loadProduct = async () => {
     try {
-      setLoading(true)
       setError(null)
       
       // Obtener el producto directamente de Firestore usando el ID
@@ -58,31 +53,7 @@ function ProductDetail() {
       console.error('Error al cargar producto:', err)
       setError('Error al cargar el producto')
       setTimeout(() => navigate('/'), 2000)
-    } finally {
-      setLoading(false)
     }
-  }
-
-  // Scroll to top al cargar
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [id])
-
-  if (loading) {
-    return (
-      <div className="product-detail-loading">
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-          <div style={{ textAlign: 'center' }}>
-            <FontAwesomeIcon 
-              icon={faSpinner} 
-              spin 
-              style={{ fontSize: '48px', color: '#3a86ff', marginBottom: '20px', display: 'block' }}
-            />
-            <p style={{ fontSize: '18px', color: '#6c757d' }}>Cargando producto...</p>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   if (error || !product) {
@@ -135,10 +106,6 @@ function ProductDetail() {
       size: selectedSize,
       quantity: quantity
     })
-
-    // Mostrar mensaje de éxito
-    setShowSuccessMessage(true)
-    setTimeout(() => setShowSuccessMessage(false), 3000)
   }
 
   const handleQuantityChange = (newQuantity) => {
@@ -302,14 +269,6 @@ function ProductDetail() {
                 Ver Carrito
               </Link>
             </div>
-
-            {/* Mensaje de éxito */}
-            {showSuccessMessage && (
-              <div className="success-message">
-                <FontAwesomeIcon icon={faCheck} />
-                <span>¡Producto agregado al carrito!</span>
-              </div>
-            )}
           </div>
         </div>
       </div>
