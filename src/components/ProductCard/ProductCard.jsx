@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { formatPrice } from '../../utils/formatters'
+import { formatPrice, getFinalPrice } from '../../utils/formatters'
 import './ProductCard.css'
 
 function ProductCard({ 
@@ -8,15 +8,8 @@ function ProductCard({
   showCategory = true
 }) {
 
-  // Función para calcular precio con descuento
-  const getPriceWithDiscount = (product) => {
-    if (!product.discount || product.discount === 0) return product.price
-    return Math.round(product.price * (1 - product.discount / 100))
-  }
-
-  const finalPrice = product.discount > 0 
-    ? getPriceWithDiscount(product)
-    : product.price
+  // ✅ MEJORADO: Usar función centralizada de formatters
+  const finalPrice = getFinalPrice(product)
     
   const productName = product.brand 
     ? `${product.brand} ${product.model}` 
@@ -33,8 +26,12 @@ function ProductCard({
         {/* BADGES DE ESTADO */}
         {(product.discount > 0 || product.isNew) && (
           <div className="product-card__badges">
-            {product.discount > 0 && <span className="badge badge--discount">-{product.discount}%</span>}
-            {product.isNew && <span className="badge badge--new">NUEVO</span>}
+            {product.discount > 0 && (
+              <span className="badge badge--discount">-{product.discount}%</span>
+            )}
+            {product.isNew && (
+              <span className="badge badge--new">NUEVO</span>
+            )}
           </div>
         )}
 
@@ -56,25 +53,37 @@ function ProductCard({
 
           <div className="product-card__header">
             <h3 className="product-card__name">
-              {product.brand && <span className="product-card__brand">{product.brand}</span>}
-              {product.model && <span className="product-card__model">{product.model}</span>}
+              {product.brand && (
+                <span className="product-card__brand">{product.brand}</span>
+              )}
+              {product.model && (
+                <span className="product-card__model">{product.model}</span>
+              )}
               {!product.brand && !product.model && product.name}
             </h3>
           </div>
 
           {variant === 'featured' && product.description && (
-            <p className="product-card__description">{product.description.substring(0, 80)}...</p>
+            <p className="product-card__description">
+              {product.description.substring(0, 80)}...
+            </p>
           )}
 
           {/* PRECIOS */}
           <div className="product-card__prices">
             {product.discount > 0 ? (
               <>
-                <span className="product-card__price product-card__price--original">{formatPrice(product.price)}</span>
-                <span className="product-card__price product-card__price--final">{formatPrice(finalPrice)}</span>
+                <span className="product-card__price product-card__price--original">
+                  {formatPrice(product.price)}
+                </span>
+                <span className="product-card__price product-card__price--final">
+                  {formatPrice(finalPrice)}
+                </span>
               </>
             ) : (
-              <span className="product-card__price product-card__price--final">{formatPrice(product.price)}</span>
+              <span className="product-card__price product-card__price--final">
+                {formatPrice(product.price)}
+              </span>
             )}
           </div>
         </div>

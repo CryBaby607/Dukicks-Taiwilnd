@@ -5,7 +5,7 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '../../context/CartContext'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
-import { formatPrice } from '../../utils/formatters'
+import { formatPrice, getFinalPrice, calculateSavings } from '../../utils/formatters'
 import './ProductDetail.css'
 
 function ProductDetail() {
@@ -47,10 +47,9 @@ function ProductDetail() {
     ? product.images
     : (product.image ? [product.image] : [])
 
-  const finalPrice =
-    product.discount && product.discount > 0
-      ? Math.round(product.price * (1 - product.discount / 100))
-      : product.price
+  // ✅ MEJORADO: Usar funciones centralizadas
+  const finalPrice = getFinalPrice(product)
+  const savings = calculateSavings(product.price, product.discount)
 
   const productName = product.brand
     ? `${product.brand} ${product.model}`
@@ -132,7 +131,7 @@ function ProductDetail() {
                     {formatPrice(finalPrice)}
                   </span>
                   <span className="detail-savings">
-                    Ahorras {formatPrice(product.price - finalPrice)}
+                    Ahorras {formatPrice(savings)}
                   </span>
                 </>
               ) : (

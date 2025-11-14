@@ -19,18 +19,59 @@ export const formatPrices = (prices) => {
   return prices.map(formatPrice)
 }
 
-// Calcula desglose de precio con descuento
+// ✅ NUEVO: Calcula el precio con descuento aplicado
+export const calculateDiscountedPrice = (price, discount = 0) => {
+  if (typeof price !== 'number' || price < 0) {
+    console.warn('calculateDiscountedPrice: precio inválido', price)
+    return price || 0
+  }
+
+  if (typeof discount !== 'number' || discount < 0 || discount > 100) {
+    console.warn('calculateDiscountedPrice: descuento inválido', discount)
+    return price
+  }
+
+  if (discount === 0) return price
+
+  return Math.round(price * (1 - discount / 100))
+}
+
+// ✅ NUEVO: Calcula el monto ahorrado
+export const calculateSavings = (price, discount = 0) => {
+  if (!discount || discount === 0) return 0
+  
+  const discountedPrice = calculateDiscountedPrice(price, discount)
+  return price - discountedPrice
+}
+
+// Calcula desglose completo de precio con descuento
 export const getPriceBreakdown = (price, discount = 0) => {
-  const discountAmount = Math.round((price * discount) / 100)
-  const finalPrice = price - discountAmount
+  const finalPrice = calculateDiscountedPrice(price, discount)
+  const saved = calculateSavings(price, discount)
 
   return {
     original: formatPrice(price),
     originalRaw: price,
     discount,
-    discountAmount,
+    discountAmount: saved,
     final: formatPrice(finalPrice),
     finalRaw: finalPrice,
-    saved: formatPrice(discountAmount)
+    saved: formatPrice(saved),
+    hasDiscount: discount > 0
   }
+}
+
+// ✅ NUEVO: Obtiene el precio final (con o sin descuento)
+export const getFinalPrice = (product) => {
+  if (!product) return 0
+  
+  const price = product.price || 0
+  const discount = product.discount || 0
+  
+  return calculateDiscountedPrice(price, discount)
+}
+
+// ✅ NUEVO: Formatea el precio final de un producto
+export const formatProductPrice = (product) => {
+  return formatPrice(getFinalPrice(product))
 }

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { getAllProducts } from '../../utils/productService'
 import { searchProductsWithRelevance } from '../../utils/search'
+import { useDebounce } from '../../hooks/useDebounce'
 import './SearchBar.css'
 
 function SearchBar() {
@@ -16,9 +17,11 @@ function SearchBar() {
   const [searchTerm, setSearchTerm] = useState('')
   const [suggestions, setSuggestions] = useState([])
   const [isOpen, setIsOpen] = useState(false)
-  const [debounceTimer, setDebounceTimer] = useState(null)
   const [allProducts, setAllProducts] = useState([])
   const [productsLoaded, setProductsLoaded] = useState(false)
+
+  // ✅ NUEVO: Usar hook de debounce
+  const debouncedSearchTerm = useDebounce(searchTerm, 300)
 
   // Cargar productos al montar
   useEffect(() => {
@@ -36,10 +39,27 @@ function SearchBar() {
     }
   }
 
+  // ✅ MEJORADO: Actualizar sugerencias con debounce automático
+  useEffect(() => {
+    if (debouncedSearchTerm.trim().length === 0) {
+      setSuggestions([])
+      setIsOpen(false)
+      return
+    }
+
+    if (!productsLoaded) {
+      setIsOpen(false)
+      return
+    }
+
+    const results = searchProductsWithRelevance(allProducts, debouncedSearchTerm)
+    setSuggestions(results.slice(0, 8))
+    setIsOpen(results.length > 0)
+  }, [debouncedSearchTerm, allProducts, productsLoaded])
+
   // Expandir SearchBar y enfocar input
   const handleExpand = useCallback(() => {
     setIsExpanded(true)
-    // Pequeño delay para que la animación se complete antes de enfocar
     setTimeout(() => {
       inputRef.current?.focus()
     }, 200)
@@ -51,34 +71,7 @@ function SearchBar() {
     setSearchTerm('')
     setSuggestions([])
     setIsOpen(false)
-    if (debounceTimer) clearTimeout(debounceTimer)
-  }, [debounceTimer])
-
-  // Actualizar sugerencias con debounce
-  const handleSearchChange = useCallback((value) => {
-    setSearchTerm(value)
-
-    if (debounceTimer) clearTimeout(debounceTimer)
-
-    if (value.trim().length === 0) {
-      setSuggestions([])
-      setIsOpen(false)
-      return
-    }
-
-    if (!productsLoaded) {
-      setIsOpen(false)
-      return
-    }
-
-    const timer = setTimeout(() => {
-      const results = searchProductsWithRelevance(allProducts, value)
-      setSuggestions(results.slice(0, 8))
-      setIsOpen(results.length > 0)
-    }, 200)
-
-    setDebounceTimer(timer)
-  }, [debounceTimer, allProducts, productsLoaded])
+  }, [])
 
   // Navegar a detalle del producto
   const handleSelectProduct = useCallback((productId) => {
@@ -124,13 +117,6 @@ function SearchBar() {
       return () => document.removeEventListener('keydown', handleEscape)
     }
   }, [isExpanded, handleCollapse])
-
-  // Limpiar timer al desmontar
-  useEffect(() => {
-    return () => {
-      if (debounceTimer) clearTimeout(debounceTimer)
-    }
-  }, [debounceTimer])
 
   const productName = (product) => {
     return product.brand 
@@ -180,7 +166,7 @@ function SearchBar() {
               className="search-bar__input"
               placeholder="Buscar productos..."
               value={searchTerm}
-              onChange={(e) => handleSearchChange(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
               aria-label="Buscar productos"
               aria-autocomplete="list"
               aria-controls="search-suggestions"

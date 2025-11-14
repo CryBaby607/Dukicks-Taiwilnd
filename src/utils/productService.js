@@ -4,6 +4,7 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   where,
@@ -13,9 +14,6 @@ import { db } from '../config/firebase'
 
 const PRODUCTS_COLLECTION = 'products'
 
-/**
- * Obtener todos los productos
- */
 export const getAllProducts = async () => {
   try {
     const q = query(
@@ -33,26 +31,26 @@ export const getAllProducts = async () => {
   }
 }
 
-/**
- * Obtener un producto por ID
- */
 export const getProductById = async (productId) => {
   try {
     const docRef = doc(db, PRODUCTS_COLLECTION, productId)
-    const docSnap = await getDocs(query(collection(db, PRODUCTS_COLLECTION)))
+    const docSnap = await getDoc(docRef)
     
-    return docSnap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .find(p => p.id === productId) || null
+    if (!docSnap.exists()) {
+      console.warn(`Producto con ID ${productId} no encontrado`)
+      return null
+    }
+    
+    return {
+      id: docSnap.id,
+      ...docSnap.data()
+    }
   } catch (error) {
     console.error('Error al obtener producto:', error)
     throw error
   }
 }
 
-/**
- * Crear un nuevo producto
- */
 export const createProduct = async (productData) => {
   try {
     const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
@@ -67,9 +65,6 @@ export const createProduct = async (productData) => {
   }
 }
 
-/**
- * Actualizar un producto existente
- */
 export const updateProduct = async (productId, productData) => {
   try {
     const productRef = doc(db, PRODUCTS_COLLECTION, productId)
@@ -84,9 +79,6 @@ export const updateProduct = async (productId, productData) => {
   }
 }
 
-/**
- * Eliminar un producto
- */
 export const deleteProduct = async (productId) => {
   try {
     const productRef = doc(db, PRODUCTS_COLLECTION, productId)
@@ -98,9 +90,6 @@ export const deleteProduct = async (productId) => {
   }
 }
 
-/**
- * Obtener productos por categoría
- */
 export const getProductsByCategory = async (category) => {
   try {
     const q = query(
@@ -118,9 +107,6 @@ export const getProductsByCategory = async (category) => {
   }
 }
 
-/**
- * Obtener productos destacados
- */
 export const getFeaturedProducts = async () => {
   try {
     const q = query(
@@ -138,9 +124,6 @@ export const getFeaturedProducts = async () => {
   }
 }
 
-/**
- * Obtener productos nuevos
- */
 export const getNewProducts = async () => {
   try {
     const q = query(
@@ -158,9 +141,6 @@ export const getNewProducts = async () => {
   }
 }
 
-/**
- * Buscar productos
- */
 export const searchProducts = async (query_text) => {
   try {
     const allProducts = await getAllProducts()
