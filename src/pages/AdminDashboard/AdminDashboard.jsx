@@ -9,7 +9,7 @@ import {
   faBoxOpen,
   faSpinner
 } from '@fortawesome/free-solid-svg-icons'
-import { useAuth } from '../../context/AdminContext'
+import { useAdmin } from '../../context/AdminContext'  // ✅ CORRECTO
 import { useNavigate } from 'react-router-dom'
 import { 
   getAllProducts, 
@@ -21,7 +21,7 @@ import { formatPrice } from '../../utils/formatters'
 import './AdminDashboard.css'
 
 function AdminDashboard() {
-  const { user, logout } = useAuth()
+  const { adminUser, logout } = useAdmin()  // ✅ CAMBIÉ: user -> adminUser
   const navigate = useNavigate()
   
   const [products, setProducts] = useState([])
@@ -296,10 +296,10 @@ function AdminDashboard() {
 
             <div className="admin-user-info">
               <div className="user-avatar">
-                {user?.email?.charAt(0).toUpperCase() || 'A'}
+                {adminUser?.email?.charAt(0).toUpperCase() || 'A'}  {/* ✅ CAMBIÉ: user -> adminUser */}
               </div>
               <div className="user-details">
-                <p className="user-name">{user?.email || 'Administrador'}</p>
+                <p className="user-name">{adminUser?.email || 'Administrador'}</p>  {/* ✅ CAMBIÉ: user -> adminUser */}
                 <p className="user-role">Admin</p>
               </div>
               <button onClick={handleLogout} className="btn-logout" aria-label="Cerrar sesión">
