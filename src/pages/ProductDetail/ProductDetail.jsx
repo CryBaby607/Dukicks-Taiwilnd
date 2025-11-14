@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-  faShoppingCart
-} from '@fortawesome/free-solid-svg-icons'
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '../../context/CartContext'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
@@ -14,89 +12,56 @@ function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { addToCart } = useCart()
-  
+
   const [product, setProduct] = useState(null)
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const [error, setError] = useState(null)
 
-  // Cargar producto al montar o cambiar ID
+  // Cargar producto
   useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const ref = doc(db, 'products', id)
+        const snap = await getDoc(ref)
+
+        if (!snap.exists()) {
+          navigate('/', { replace: true })
+          return
+        }
+
+        setProduct({ id: snap.id, ...snap.data() })
+      } catch (err) {
+        console.error('Error al cargar:', err)
+        navigate('/', { replace: true })
+      }
+    }
+
     loadProduct()
   }, [id, navigate])
 
-  const loadProduct = async () => {
-    try {
-      setError(null)
-      
-      // Obtener el producto directamente de Firestore usando el ID
-      const productRef = doc(db, 'products', id)
-      const productSnap = await getDoc(productRef)
-      
-      if (!productSnap.exists()) {
-        setError('Producto no encontrado')
-        setTimeout(() => navigate('/'), 2000)
-        return
-      }
-      
-      const productData = {
-        id: productSnap.id,
-        ...productSnap.data()
-      }
-      
-      setProduct(productData)
-      setSelectedImage(0)
-      setSelectedSize(null)
-      setQuantity(1)
-    } catch (err) {
-      console.error('Error al cargar producto:', err)
-      setError('Error al cargar el producto')
-      setTimeout(() => navigate('/'), 2000)
-    }
-  }
+  // No renderizar nada si aún no hay producto
+  if (!product) return null
 
-  if (error || !product) {
-    return (
-      <div className="product-detail-loading">
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: '18px', color: '#ef4444', marginBottom: '20px' }}>
-              {error || 'Producto no encontrado'}
-            </p>
-            <p style={{ fontSize: '14px', color: '#6c757d' }}>Redirigiendo...</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Calcular precio final con descuento
-  const getPriceWithDiscount = (product) => {
-    if (!product.discount || product.discount === 0) return product.price
-    return Math.round(product.price * (1 - product.discount / 100))
-  }
-
-  const finalPrice = getPriceWithDiscount(product)
-
-  // Preparar imágenes
-  const images = Array.isArray(product.images) 
-    ? product.images 
+  const images = Array.isArray(product.images)
+    ? product.images
     : (product.image ? [product.image] : [])
 
-  const productName = product.brand 
-    ? `${product.brand} ${product.model}` 
+  const finalPrice =
+    product.discount && product.discount > 0
+      ? Math.round(product.price * (1 - product.discount / 100))
+      : product.price
+
+  const productName = product.brand
+    ? `${product.brand} ${product.model}`
     : product.name
 
-  // Handlers
   const handleAddToCart = () => {
-    // Validar talla si el producto tiene tallas
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      alert('Por favor selecciona una talla')
+    if (product.sizes?.length > 0 && !selectedSize) {
+      alert('Selecciona una talla')
       return
     }
 
-    // Agregar al carrito
     addToCart({
       id: product.id,
       name: productName,
@@ -104,26 +69,21 @@ function ProductDetail() {
       image: images[0] || 'https://via.placeholder.com/300',
       category: product.category,
       size: selectedSize,
-      quantity: quantity
+      quantity
     })
   }
 
-  const handleQuantityChange = (newQuantity) => {
-    if (newQuantity >= 1 && newQuantity <= 99) {
-      setQuantity(newQuantity)
-    }
+  const changeQuantity = n => {
+    if (n >= 1 && n <= 99) setQuantity(n)
   }
 
   return (
     <div className="product-detail">
       <div className="container">
-        
-        {/* Contenido principal */}
         <div className="detail-wrapper">
-          
-          {/* Galería de imágenes */}
+
+          {/* Galería */}
           <div className="detail-gallery">
-            {/* Imagen principal */}
             <div className="gallery-main">
               {product.discount > 0 && (
                 <span className="detail-badge detail-badge--discount">
@@ -133,44 +93,35 @@ function ProductDetail() {
               {product.isNew && (
                 <span className="detail-badge detail-badge--new">NUEVO</span>
               )}
-              <img 
-                src={images[selectedImage] || 'https://via.placeholder.com/600'} 
-                alt={`${productName} - Vista ${selectedImage + 1}`}
+              <img
+                src={images[selectedImage]}
+                alt={productName}
                 className="gallery-main-image"
               />
             </div>
 
-            {/* Thumbnails */}
             {images.length > 1 && (
               <div className="gallery-thumbnails">
-                {images.map((image, index) => (
+                {images.map((img, i) => (
                   <button
-                    key={index}
-                    className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
-                    onClick={() => setSelectedImage(index)}
-                    aria-label={`Ver imagen ${index + 1}`}
+                    key={i}
+                    className={`thumbnail ${selectedImage === i ? 'active' : ''}`}
+                    onClick={() => setSelectedImage(i)}
                   >
-                    <img src={image} alt={`Thumbnail ${index + 1}`} />
+                    <img src={img} alt={`Imagen ${i + 1}`} />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Información del producto */}
+          {/* Info */}
           <div className="detail-info">
-            
-            {/* Categoría */}
+
             <span className="detail-category">{product.category}</span>
 
-            {/* Nombre */}
-            <h1 className="detail-title">
-              {product.brand && <span className="detail-brand">{product.brand}</span>}
-              {product.model && <span className="detail-model">{product.model}</span>}
-              {!product.brand && !product.model && product.name}
-            </h1>
+            <h1 className="detail-title">{productName}</h1>
 
-            {/* Precios */}
             <div className="detail-prices">
               {product.discount > 0 ? (
                 <>
@@ -191,7 +142,6 @@ function ProductDetail() {
               )}
             </div>
 
-            {/* Descripción */}
             {product.description && (
               <div className="detail-description">
                 <h3>Descripción</h3>
@@ -199,17 +149,15 @@ function ProductDetail() {
               </div>
             )}
 
-            {/* Selector de talla */}
-            {product.sizes && product.sizes.length > 0 && (
+            {product.sizes?.length > 0 && (
               <div className="detail-sizes">
                 <h3>Selecciona tu talla</h3>
                 <div className="sizes-grid">
-                  {product.sizes.map((size) => (
+                  {product.sizes.map(size => (
                     <button
                       key={size}
                       className={`size-btn ${selectedSize === size ? 'active' : ''}`}
                       onClick={() => setSelectedSize(size)}
-                      aria-pressed={selectedSize === size}
                     >
                       {size}
                     </button>
@@ -218,39 +166,36 @@ function ProductDetail() {
               </div>
             )}
 
-            {/* Cantidad */}
             <div className="detail-quantity">
               <h3>Cantidad</h3>
               <div className="quantity-controls">
                 <button
                   className="quantity-btn"
-                  onClick={() => handleQuantityChange(quantity - 1)}
+                  onClick={() => changeQuantity(quantity - 1)}
                   disabled={quantity <= 1}
-                  aria-label="Disminuir cantidad"
                 >
                   -
                 </button>
+
                 <input
                   type="number"
                   min="1"
                   max="99"
                   value={quantity}
-                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                  onChange={e => changeQuantity(parseInt(e.target.value) || 1)}
                   className="quantity-input"
-                  aria-label="Cantidad"
                 />
+
                 <button
                   className="quantity-btn"
-                  onClick={() => handleQuantityChange(quantity + 1)}
+                  onClick={() => changeQuantity(quantity + 1)}
                   disabled={quantity >= 99}
-                  aria-label="Aumentar cantidad"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            {/* Botones de acción */}
             <div className="detail-actions">
               <button
                 className="btn btn-primary btn-add-cart"
@@ -259,9 +204,7 @@ function ProductDetail() {
               >
                 <FontAwesomeIcon icon={faShoppingCart} />
                 <span>
-                  {product.inStock === false 
-                    ? 'Agotado' 
-                    : 'Agregar al Carrito'}
+                  {product.inStock ? 'Agregar al Carrito' : 'Agotado'}
                 </span>
               </button>
 
@@ -269,6 +212,7 @@ function ProductDetail() {
                 Ver Carrito
               </Link>
             </div>
+
           </div>
         </div>
       </div>
