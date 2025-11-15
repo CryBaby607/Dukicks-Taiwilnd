@@ -71,7 +71,6 @@ export const searchWithFilters = (products, searchQuery, filters = {}) => {
   if (filters.brand && filters.brand !== 'Todas') results = results.filter(p => p.brand === filters.brand)
   if (filters.minPrice) results = results.filter(p => p.price >= filters.minPrice)
   if (filters.maxPrice) results = results.filter(p => p.price <= filters.maxPrice)
-  if (filters.inStock) results = results.filter(p => p.inStock)
   if (filters.hasDiscount) results = results.filter(p => p.discount > 0)
 
   return results

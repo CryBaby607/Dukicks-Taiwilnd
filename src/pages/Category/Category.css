@@ -267,23 +267,6 @@
   color: var(--accent);
 }
 
-.stock-info {
-  padding-top: var(--spacing-sm);
-  border-top: 1px solid var(--light);
-}
-
-.in-stock {
-  font-size: var(--fs-sm);
-  color: var(--success);
-  font-weight: var(--fw-semibold);
-}
-
-.out-of-stock {
-  font-size: var(--fs-sm);
-  color: var(--error);
-  font-weight: var(--fw-semibold);
-}
-
 .no-products {
   grid-column: 1 / -1;
   text-align: center;
