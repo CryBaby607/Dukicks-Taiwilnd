@@ -1,17 +1,30 @@
 import { useCart } from '../../context/CartContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faWhatsapp } from '@fortawesome/free-solid-svg-icons'
 import { formatPrice } from '../../utils/formatters'
+import { sendOrderViaWhatsApp } from '../../utils/whatsapp'
 import './Cart.css'
 
 function Cart() {
   const { cartItems, updateQuantity, removeFromCart, subtotal, total, itemCount } = useCart()
 
-  const handleQuantityChange = (productId, newQuantity) => {
+  // ⚠️ IMPORTANTE: Cambia este número por el de tu negocio
+  const BUSINESS_PHONE = '5219611567875' // Formato: 52 + 10 dígitos
+
+  const handleQuantityChange = (productId, size, newQuantity) => {
     const quantity = parseInt(newQuantity, 10)
     if (quantity > 0 && quantity <= 99) {
-      updateQuantity(productId, quantity)
+      updateQuantity(productId, size, quantity)
     }
+  }
+
+  const handleWhatsAppCheckout = () => {
+    if (cartItems.length === 0) {
+      alert('Tu carrito está vacío')
+      return
+    }
+
+    sendOrderViaWhatsApp(BUSINESS_PHONE, cartItems, total)
   }
 
   if (cartItems.length === 0) {
@@ -52,7 +65,7 @@ function Cart() {
 
             <div className="cart-items-list">
               {cartItems.map((item) => (
-                <article key={item.id} className="cart-item">
+                <article key={`${item.id}-${item.size}`} className="cart-item">
                   <div className="item-image-wrapper">
                     <img
                       src={item.image}
@@ -64,6 +77,9 @@ function Cart() {
                   <div className="item-info">
                     <h3 className="item-name">{item.name}</h3>
                     <p className="item-category">{item.category}</p>
+                    {item.size && (
+                      <p className="item-size">Talla: {item.size}</p>
+                    )}
                   </div>
 
                   <div className="item-price">
@@ -72,16 +88,16 @@ function Cart() {
                   </div>
 
                   <div className="item-quantity">
-                    <label htmlFor={`quantity-${item.id}`} className="quantity-label">
+                    <label htmlFor={`quantity-${item.id}-${item.size}`} className="quantity-label">
                       Cantidad
                     </label>
                     <input
-                      id={`quantity-${item.id}`}
+                      id={`quantity-${item.id}-${item.size}`}
                       type="number"
                       min="1"
                       max="99"
                       value={item.quantity}
-                      onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                      onChange={(e) => handleQuantityChange(item.id, item.size, e.target.value)}
                       className="quantity-input"
                       aria-label={`Cantidad de ${item.name}`}
                     />
@@ -95,7 +111,7 @@ function Cart() {
                   </div>
 
                   <button
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => removeFromCart(item.id, item.size)}
                     className="btn-remove"
                     aria-label={`Eliminar ${item.name} del carrito`}
                     title="Eliminar producto"
@@ -124,13 +140,22 @@ function Cart() {
                 </span>
               </div>
 
-              <button className="btn btn-primary btn-checkout">
-                Proceder al Pago
+              {/* ✅ BOTÓN DE WHATSAPP */}
+              <button 
+                className="btn btn-primary btn-checkout btn-whatsapp"
+                onClick={handleWhatsAppCheckout}
+              >
+                <FontAwesomeIcon icon={faWhatsapp} />
+                Realizar Pedido por WhatsApp
               </button>
 
               <a href="/" className="btn btn-continue">
                 Seguir Comprando
               </a>
+
+              <p className="whatsapp-note">
+                Al hacer clic, se abrirá WhatsApp con tu pedido
+              </p>
             </div>
           </aside>
         </div>

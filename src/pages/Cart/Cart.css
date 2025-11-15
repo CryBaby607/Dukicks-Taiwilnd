@@ -457,3 +457,33 @@
     font-size: var(--fs-sm);
   }
 }
+
+/* src/pages/Cart/Cart.css - AGREGAR AL FINAL: */
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.btn-whatsapp:hover {
+  background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+  transform: translateY(-2px);
+}
+
+.whatsapp-note {
+  font-size: var(--fs-xs);
+  color: var(--gray);
+  text-align: center;
+  margin: var(--spacing-sm) 0 0 0;
+  font-style: italic;
+}
+
+.item-size {
+  font-size: var(--fs-sm);
+  color: var(--gray);
+  font-weight: var(--fw-semibold);
+  margin: 0;
+}

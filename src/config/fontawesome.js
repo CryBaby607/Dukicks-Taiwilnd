@@ -18,7 +18,8 @@ import {
   faFacebookF,
   faInstagram,
   faTwitter,
-  faTiktok
+  faTiktok,
+  faWhatsapp  
 } from '@fortawesome/free-brands-svg-icons'
 
 // Registrar todos los iconos en la librería
@@ -37,5 +38,6 @@ library.add(
   faFacebookF,
   faInstagram,
   faTwitter,
-  faTiktok
+  faTiktok,
+  faWhatsapp
 )
