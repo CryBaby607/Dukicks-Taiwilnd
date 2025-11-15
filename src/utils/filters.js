@@ -41,13 +41,7 @@ export const filterByPrice = (products, minPrice = 0, maxPrice = Infinity) => {
   return products.filter(p => p.price >= minPrice && p.price <= maxPrice)
 }
 
-// Filtra solo productos con stock disponible
-export const filterInStock = (products) => {
-  if (!Array.isArray(products)) return []
-  return products.filter(p => p.inStock === true)
-}
-
-// Aplica varios filtros: marca, precio y stock
+// Aplica varios filtros: marca y precio
 export const applyFilters = (products, filters = {}) => {
   let result = [...products]
 
@@ -56,7 +50,6 @@ export const applyFilters = (products, filters = {}) => {
     result = result.filter(p => p.price >= filters.priceMin)
   if (filters.priceMax !== undefined && filters.priceMax < Infinity)
     result = result.filter(p => p.price <= filters.priceMax)
-  if (filters.inStock === true) result = filterInStock(result)
 
   return result
 }

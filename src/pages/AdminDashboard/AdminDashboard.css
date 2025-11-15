@@ -487,6 +487,50 @@ input[type="checkbox"]:disabled {
   cursor: not-allowed;
 }
 
+/* ===== SELECTOR DE TALLAS ===== */
+.sizes-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.size-button {
+  min-width: 50px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--light);
+  background-color: var(--white);
+  color: var(--primary);
+  border-radius: var(--radius-md);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.size-button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background-color: var(--light);
+}
+
+.size-button-active {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  color: var(--white);
+}
+
+.size-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sizes-selected {
+  margin-top: var(--spacing-xs);
+}
+
+.sizes-selected small {
+  font-size: var(--fs-xs);
+  color: var(--gray);
+}
+
 /* ===== MENSAJE DE ERROR ===== */
 .error-message {
   font-size: var(--fs-xs);
@@ -561,17 +605,11 @@ input[type="checkbox"]:disabled {
   color: var(--white);
 }
 
-.state-badge-in-stock {
-  background-color: var(--success);
-  color: var(--white);
-}
-
-.state-badge-out-of-stock {
-  background-color: var(--error);
-  color: var(--white);
-}
-
 .state-badge-with-discount {
   background-color: var(--warning);
   color: var(--white);
+}
+
+.text-muted {
+  color: var(--gray);
 }

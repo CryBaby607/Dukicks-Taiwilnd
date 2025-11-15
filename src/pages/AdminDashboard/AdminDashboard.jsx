@@ -46,7 +46,6 @@ function AdminDashboard() {
     description: '',
     image: '',
     isNew: false,
-    inStock: true,
     sizes: []
   })
 
@@ -85,7 +84,6 @@ function AdminDashboard() {
       description: '',
       image: '',
       isNew: false,
-      inStock: true,
       sizes: []
     })
     setErrors({})
@@ -103,7 +101,6 @@ function AdminDashboard() {
       description: product.description,
       image: product.image || product.images?.[0] || '',
       isNew: product.isNew || false,
-      inStock: product.inStock !== false,
       sizes: Array.isArray(product.sizes) ? product.sizes : []
     })
     setErrors({})
@@ -122,7 +119,6 @@ function AdminDashboard() {
       description: '',
       image: '',
       isNew: false,
-      inStock: true,
       sizes: []
     })
     setErrors({})
@@ -197,7 +193,6 @@ function AdminDashboard() {
       newErrors.description = 'La descripción es requerida'
     }
 
-    // 🚀 VALIDAR TALLAS
     if (formData.sizes.length === 0) {
       newErrors.sizes = 'Selecciona al menos una talla'
     }
@@ -234,8 +229,7 @@ function AdminDashboard() {
         images: [formData.image || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop'],
         description: formData.description,
         isNew: formData.isNew,
-        inStock: formData.inStock,
-        sizes: formData.sizes, // 🚀 YA ES UN ARRAY
+        sizes: formData.sizes,
         type: 'Tenis',
         isFeatured: false
       }
@@ -271,7 +265,6 @@ function AdminDashboard() {
     }
   }
 
-  // 🚀 OBTENER TALLAS DISPONIBLES SEGÚN CATEGORÍA
   const availableSizes = SIZES_BY_CATEGORY[formData.category] || []
 
   return (
@@ -343,20 +336,9 @@ function AdminDashboard() {
                       )}
                     </td>
                     <td>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {product.isNew && (
-                          <span className="state-badge state-badge-new">NUEVO</span>
-                        )}
-                        {product.inStock ? (
-                          <span className="state-badge state-badge-in-stock">
-                            En stock
-                          </span>
-                        ) : (
-                          <span className="state-badge state-badge-out-of-stock">
-                            Agotado
-                          </span>
-                        )}
-                      </div>
+                      {product.isNew && (
+                        <span className="state-badge state-badge-new">NUEVO</span>
+                      )}
                     </td>
                     <td>
                       <div className="product-actions">
@@ -477,7 +459,6 @@ function AdminDashboard() {
                     />
                   </div>
 
-                  {/* 🚀 NUEVO: SELECTOR DE TALLAS CON BOTONES */}
                   <div className="form-group">
                     <label className="form-label">Tallas *</label>
                     <div className="sizes-selector">
@@ -521,18 +502,6 @@ function AdminDashboard() {
                         onChange={handleInputChange}
                       />
                       <span style={{ marginLeft: '8px' }}>Marcar como NUEVO</span>
-                    </label>
-                  </div>
-
-                  <div className="form-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="inStock"
-                        checked={formData.inStock}
-                        onChange={handleInputChange}
-                      />
-                      <span style={{ marginLeft: '8px' }}>Disponible en stock</span>
                     </label>
                   </div>
 

@@ -47,7 +47,6 @@ function ProductDetail() {
     ? product.images
     : (product.image ? [product.image] : [])
 
-  // ✅ MEJORADO: Usar funciones centralizadas
   const finalPrice = getFinalPrice(product)
   const savings = calculateSavings(product.price, product.discount)
 
@@ -199,12 +198,9 @@ function ProductDetail() {
               <button
                 className="btn btn-primary btn-add-cart"
                 onClick={handleAddToCart}
-                disabled={product.inStock === false}
               >
                 <FontAwesomeIcon icon={faShoppingCart} />
-                <span>
-                  {product.inStock ? 'Agregar al Carrito' : 'Agotado'}
-                </span>
+                <span>Agregar al Carrito</span>
               </button>
 
               <Link to="/cart" className="btn btn-secondary">
