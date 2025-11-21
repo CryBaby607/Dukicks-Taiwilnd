@@ -28,10 +28,6 @@ export const getProductImages = (product) => {
   return []
 }
 
-export const getProductImageWithFallback = (product, fallback = 'https://via.placeholder.com/300') => {
-  return getProductImage(product) || fallback
-}
-
 export const getProductName = (product) => {
   if (!product || typeof product !== 'object') {
     console.warn('getProductName: product inválido', product)

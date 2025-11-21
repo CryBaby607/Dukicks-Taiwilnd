@@ -49,29 +49,3 @@ export const searchProductsWithRelevance = (products, query) => {
     .sort((a, b) => b.relevanceScore - a.relevanceScore)
     .map(({ relevanceScore, ...p }) => p)
 }
-
-export const getSearchSuggestions = (products, query, limit = 5) => {
-  if (!Array.isArray(products) || !query?.trim() || query.trim().length < 2) return []
-
-  const normalizedQuery = query.toLowerCase().trim()
-  const suggestions = new Set()
-
-  products.forEach(p => {
-    ;[p.brand, p.model, p.category].forEach(f => {
-      if (f && String(f).toLowerCase().includes(normalizedQuery)) suggestions.add(String(f))
-    })
-  })
-
-  return Array.from(suggestions).slice(0, limit)
-}
-
-export const searchWithFilters = (products, searchQuery, filters = {}) => {
-  let results = searchProductsWithRelevance(products, searchQuery)
-
-  if (filters.brand && filters.brand !== 'Todas') results = results.filter(p => p.brand === filters.brand)
-  if (filters.minPrice) results = results.filter(p => p.price >= filters.minPrice)
-  if (filters.maxPrice) results = results.filter(p => p.price <= filters.maxPrice)
-  if (filters.hasDiscount) results = results.filter(p => p.discount > 0)
-
-  return results
-}

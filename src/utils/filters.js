@@ -1,4 +1,3 @@
-// Obtiene marcas únicas de los productos
 export const getUniqueBrands = (products, includeAll = true) => {
   if (!Array.isArray(products)) return includeAll ? ['Todas'] : []
 
@@ -6,7 +5,6 @@ export const getUniqueBrands = (products, includeAll = true) => {
   return includeAll ? ['Todas', ...brands] : brands
 }
 
-// Filtra productos por marca (string o array)
 export const filterByBrand = (products, brands) => {
   if (!Array.isArray(products)) return []
 
@@ -19,7 +17,6 @@ export const filterByBrand = (products, brands) => {
   return products.filter(p => brandArray.includes(p.brand))
 }
 
-// Obtiene el rango de precios { min, max }
 export const getPriceRange = (products) => {
   if (!Array.isArray(products) || products.length === 0) return { min: 0, max: 0 }
 
@@ -35,13 +32,11 @@ export const getPriceRange = (products) => {
   }
 }
 
-// Filtra productos por rango de precios
 export const filterByPrice = (products, minPrice = 0, maxPrice = Infinity) => {
   if (!Array.isArray(products)) return []
   return products.filter(p => p.price >= minPrice && p.price <= maxPrice)
 }
 
-// Aplica varios filtros: marca y precio
 export const applyFilters = (products, filters = {}) => {
   let result = [...products]
 
@@ -52,10 +47,4 @@ export const applyFilters = (products, filters = {}) => {
     result = result.filter(p => p.price <= filters.priceMax)
 
   return result
-}
-
-// Cuenta cuántos productos hay por marca
-export const countByBrand = (products, brand) => {
-  if (!Array.isArray(products) || brand === 'Todas') return products.length || 0
-  return products.filter(p => p.brand === brand).length
 }
