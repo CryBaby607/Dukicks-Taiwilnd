@@ -4,27 +4,23 @@
   margin-top: auto;
 }
 
-/* === Sección principal del footer === */
 .footer-main {
   padding: var(--spacing-3xl) 0 var(--spacing-2xl);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* === Grid del footer === */
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-2xl);
 }
 
-/* === Columnas del footer === */
 .footer-column {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
 }
 
-/* === Branding === */
 .footer-brand {
   display: flex;
   flex-direction: column;
@@ -55,7 +51,6 @@
   max-width: 280px;
 }
 
-/* === Títulos de columnas === */
 .footer-title {
   font-family: var(--font-title);
   font-size: var(--fs-lg);
@@ -66,7 +61,6 @@
   letter-spacing: 0.5px;
 }
 
-/* === Links del footer === */
 .footer-links {
   list-style: none;
   padding: 0;
@@ -128,7 +122,6 @@
   text-decoration: none;
 }
 
-/* === Footer Bottom === */
 .footer-bottom {
   padding: var(--spacing-lg) 0;
   background-color: rgba(0, 0, 0, 0.3);
@@ -152,7 +145,6 @@
   font-weight: var(--fw-bold);
 }
 
-/* === Responsive - Tablet === */
 @media (max-width: 1024px) {
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);

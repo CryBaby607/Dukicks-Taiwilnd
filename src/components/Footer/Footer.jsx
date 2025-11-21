@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faFacebookF,
   faInstagram,
-  faTwitter,
   faTiktok
 } from '@fortawesome/free-brands-svg-icons'
 import './Footer.css'
@@ -38,6 +37,7 @@ function Footer() {
                 >
                   <FontAwesomeIcon icon={faFacebookF} />
                 </a>
+
                 <a 
                   href="https://instagram.com" 
                   target="_blank" 
@@ -47,15 +47,7 @@ function Footer() {
                 >
                   <FontAwesomeIcon icon={faInstagram} />
                 </a>
-                <a 
-                  href="https://twitter.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  aria-label="Síguenos en Twitter"
-                  className="social-link"
-                >
-                  <FontAwesomeIcon icon={faTwitter} />
-                </a>
+
                 <a 
                   href="https://tiktok.com" 
                   target="_blank" 
@@ -82,24 +74,6 @@ function Footer() {
                 </li>
                 <li>
                   <a href="#gorras">Gorras</a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="footer-column">
-              <h4 className="footer-title">Ayuda</h4>
-              <ul className="footer-links">
-                <li>
-                  <a href="#envios">Envíos y entregas</a>
-                </li>
-                <li>
-                  <a href="#devoluciones">Devoluciones</a>
-                </li>
-                <li>
-                  <a href="#faq">Preguntas frecuentes</a>
-                </li>
-                <li>
-                  <a href="#contacto">Contacto</a>
                 </li>
               </ul>
             </div>
