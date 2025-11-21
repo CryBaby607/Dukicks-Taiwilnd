@@ -1,8 +1,3 @@
-// src/utils/whatsapp.js
-
-/**
- * Genera el mensaje de WhatsApp con el resumen del carrito
- */
 export const generateWhatsAppMessage = (cartItems, total) => {
   if (!cartItems || cartItems.length === 0) {
     return ''
@@ -27,9 +22,6 @@ export const generateWhatsAppMessage = (cartItems, total) => {
   return encodeURIComponent(message)
 }
 
-/**
- * Genera la URL de WhatsApp con el mensaje
- */
 export const generateWhatsAppURL = (phoneNumber, cartItems, total) => {
   const message = generateWhatsAppMessage(cartItems, total)
   const cleanPhone = phoneNumber.replace(/\D/g, '') // Remover caracteres no numéricos
@@ -44,26 +36,18 @@ export const generateWhatsAppURL = (phoneNumber, cartItems, total) => {
   }
 }
 
-/**
- * Abre WhatsApp con el pedido
- */
 export const sendOrderViaWhatsApp = (phoneNumber, cartItems, total) => {
   const url = generateWhatsAppURL(phoneNumber, cartItems, total)
   window.open(url, '_blank')
 }
 
-/**
- * Valida el número de teléfono
- */
 export const validatePhoneNumber = (phone) => {
   const cleaned = phone.replace(/\D/g, '')
   // México: 10 dígitos o 52 + 10 dígitos
   return cleaned.length === 10 || (cleaned.length === 12 && cleaned.startsWith('52'))
 }
 
-/**
- * Formatea el número de teléfono para WhatsApp
- */
+
 export const formatPhoneForWhatsApp = (phone) => {
   let cleaned = phone.replace(/\D/g, '')
   

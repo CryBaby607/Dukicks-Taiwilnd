@@ -20,19 +20,8 @@ import {
   deleteProduct 
 } from '../../utils/productService'
 import { formatPrice } from '../../utils/formatters'
+import { SIZES_BY_CATEGORY } from '../../config/constants'
 import './AdminDashboard.css'
-
-const SIZES_BY_CATEGORY = {
-  Hombre: [
-    25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5,
-    29, 29.5, 30, 30.5, 31, 31.5, 32
-  ],
-  Mujer: [
-    23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5,
-    27, 27.5, 28, 28.5, 29
-  ],
-  Gorras: ['Única']
-}
 
 function AdminDashboard() {
   const { adminUser, logout } = useAdmin()
