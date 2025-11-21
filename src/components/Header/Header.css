@@ -7,7 +7,6 @@
   box-shadow: var(--shadow-md);
 }
 
-/* === Header Content === */
 .header-content {
   display: flex;
   align-items: center;
@@ -15,7 +14,6 @@
   padding: var(--spacing-md) 0;
 }
 
-/* === Logo === */
 .logo {
   flex-shrink: 0;
 }
@@ -46,7 +44,6 @@
   color: var(--accent);
 }
 
-/* === Navigation === */
 .nav {
   display: flex;
   align-items: center;
@@ -93,7 +90,6 @@
   width: 100%;
 }
 
-/* === Header Icons and Controls === */
 .header-controls {
   display: flex;
   align-items: center;
@@ -101,7 +97,6 @@
   flex-shrink: 0;
 }
 
-/* === Icon Button === */
 .icon-btn {
   background: none;
   border: none;
@@ -125,7 +120,6 @@
   transform: scale(0.95);
 }
 
-/* === Cart Button with Badge === */
 .cart-btn {
   position: relative;
 }
@@ -147,7 +141,6 @@
   border: 2px solid var(--white);
 }
 
-/* === Hamburger Menu === */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -168,7 +161,6 @@
   display: block;
 }
 
-/* === Hamburger Active State === */
 .hamburger.active span:nth-child(1) {
   transform: rotate(45deg) translate(10px, 10px);
 }
@@ -181,7 +173,6 @@
   transform: rotate(-45deg) translate(8px, -8px);
 }
 
-/* === Responsive - Tablet === */
 @media (max-width: 1024px) {
   .header-content {
     padding: var(--spacing-md) 0;
@@ -196,7 +187,6 @@
   }
 }
 
-/* === Responsive - Mobile === */
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
@@ -260,7 +250,6 @@
   }
 }
 
-/* === Responsive - Small Mobile === */
 @media (max-width: 480px) {
   .logo-text {
     font-size: var(--fs-lg);
