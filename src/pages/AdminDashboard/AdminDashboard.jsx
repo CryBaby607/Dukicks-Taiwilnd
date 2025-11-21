@@ -20,6 +20,7 @@ import {
   deleteProduct 
 } from '../../utils/productService'
 import { formatPrice } from '../../utils/formatters'
+import { getProductImage } from '../../utils/imageUtils' // ✅ NUEVO IMPORT
 import { SIZES_BY_CATEGORY } from '../../config/constants'
 import './AdminDashboard.css'
 
@@ -123,7 +124,7 @@ function AdminDashboard() {
       isFeatured: product.isFeatured || false,
       sizes: Array.isArray(product.sizes) ? product.sizes : []
     })
-    setImagePreview(product.image || product.images?.[0] || null)
+    setImagePreview(getProductImage(product)) // ✅ USAR UTILIDAD
     setErrors({})
     setIsModalOpen(true)
   }
@@ -313,7 +314,7 @@ function AdminDashboard() {
         productData.imageFile = formData.imageFile
       } else if (editingProduct && !formData.imageFile) {
         // Si estamos editando y no hay imagen nueva, mantener la existente
-        productData.image = editingProduct.image
+        productData.image = getProductImage(editingProduct) // ✅ USAR UTILIDAD
       }
 
       // LLAMAR AL SERVICIO
@@ -435,7 +436,7 @@ function AdminDashboard() {
                     <tr key={product.id}>
                       <td className="product-image-cell">
                         <img 
-                          src={product.image || product.images?.[0]} 
+                          src={getProductImage(product) || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop'} // ✅ USAR UTILIDAD
                           alt={product.model}
                           className="product-thumbnail"
                           loading="lazy"

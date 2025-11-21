@@ -6,6 +6,7 @@ import { useCart } from '../../context/CartContext'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import { formatPrice, getFinalPrice, calculateSavings } from '../../utils/formatters'
+import { getProductImages, getProductName } from '../../utils/imageUtils' // ✅ NUEVO IMPORT
 import './ProductDetail.css'
 
 function ProductDetail() {
@@ -43,16 +44,10 @@ function ProductDetail() {
   // No renderizar nada si aún no hay producto
   if (!product) return null
 
-  const images = Array.isArray(product.images)
-    ? product.images
-    : (product.image ? [product.image] : [])
-
+  const images = getProductImages(product) // ✅ USAR UTILIDAD
   const finalPrice = getFinalPrice(product)
   const savings = calculateSavings(product.price, product.discount)
-
-  const productName = product.brand
-    ? `${product.brand} ${product.model}`
-    : product.name
+  const productName = getProductName(product) // ✅ USAR UTILIDAD
 
   const handleAddToCart = () => {
     if (product.sizes?.length > 0 && !selectedSize) {

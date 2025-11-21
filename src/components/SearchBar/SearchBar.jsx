@@ -5,6 +5,7 @@ import { faMagnifyingGlass, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { getAllProducts } from '../../utils/productService'
 import { searchProductsWithRelevance } from '../../utils/search'
 import { useDebounce } from '../../hooks/useDebounce'
+import { getProductImage, getProductName } from '../../utils/imageUtils'
 import './SearchBar.css'
 
 function SearchBar() {
@@ -19,7 +20,6 @@ function SearchBar() {
   const [allProducts, setAllProducts] = useState([])
   const [productsLoaded, setProductsLoaded] = useState(false)
 
-  
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
 
   useEffect(() => {
@@ -109,18 +109,6 @@ function SearchBar() {
     }
   }, [isExpanded, handleCollapse])
 
-  const productName = (product) => {
-    return product.brand 
-      ? `${product.brand} ${product.model}` 
-      : product.name
-  }
-
-  const productImage = (product) => {
-    return Array.isArray(product.images) 
-      ? product.images[0]
-      : product.image
-  }
-
   return (
     <div 
       ref={searchRef}
@@ -184,17 +172,17 @@ function SearchBar() {
                       type="button"
                       className="search-bar__suggestion-item"
                       onClick={() => handleSelectProduct(product.id)}
-                      aria-label={`Ver ${productName(product)}`}
+                      aria-label={`Ver ${getProductName(product)}`} // ✅ USAR UTILIDAD
                     >
                       <img 
-                        src={productImage(product)}
-                        alt={productName(product)}
+                        src={getProductImage(product)} // ✅ USAR UTILIDAD
+                        alt={getProductName(product)} // ✅ USAR UTILIDAD
                         className="search-bar__suggestion-image"
                         loading="lazy"
                       />
                       <div className="search-bar__suggestion-content">
                         <span className="search-bar__suggestion-name">
-                          {productName(product)}
+                          {getProductName(product)}
                         </span>
                         <span className="search-bar__suggestion-category">
                           {product.category}

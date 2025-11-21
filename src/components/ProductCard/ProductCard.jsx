@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { formatPrice, getFinalPrice } from '../../utils/formatters'
+import { getProductImage, getProductName } from '../../utils/imageUtils'
 import './ProductCard.css'
 
 function ProductCard({ 
@@ -9,14 +10,8 @@ function ProductCard({
 }) {
 
   const finalPrice = getFinalPrice(product)
-    
-  const productName = product.brand 
-    ? `${product.brand} ${product.model}` 
-    : product.name
-    
-  const productImage = Array.isArray(product.images) 
-    ? product.images[0] 
-    : product.image
+  const productName = getProductName(product) 
+  const productImage = getProductImage(product) 
 
   return (
     <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
