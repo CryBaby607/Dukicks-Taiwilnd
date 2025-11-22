@@ -8,16 +8,13 @@ function ProductCard({
   variant = 'default',
   showCategory = true
 }) {
-
   const finalPrice = getFinalPrice(product)
-  const productName = getProductName(product) 
-  const productImage = getProductImage(product) 
+  const productName = getProductName(product)
+  const productImage = getProductImage(product)
 
   return (
     <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
       <article className={`product-card product-card--${variant}`}>
-        
-        {/* BADGES DE ESTADO */}
         {(product.discount > 0 || product.isNew) && (
           <div className="product-card__badges">
             {product.discount > 0 && (
@@ -29,7 +26,6 @@ function ProductCard({
           </div>
         )}
 
-        {/* IMAGEN */}
         <div className="product-card__image-wrapper">
           <img
             src={productImage}
@@ -39,7 +35,6 @@ function ProductCard({
           />
         </div>
 
-        {/* INFORMACIÓN DEL PRODUCTO */}
         <div className="product-card__info">
           {showCategory && product.category && (
             <span className="product-card__category">{product.category}</span>
@@ -63,7 +58,6 @@ function ProductCard({
             </p>
           )}
 
-          {/* PRECIOS */}
           <div className="product-card__prices">
             {product.discount > 0 ? (
               <>
@@ -82,7 +76,7 @@ function ProductCard({
           </div>
         </div>
       </article>
-    </Link> 
+    </Link>
   )
 }
 

@@ -21,8 +21,6 @@ import AdminDashboard from './pages/AdminDashboard/AdminDashboard'
 
 export default function App() {
   const location = useLocation()
-
-  // Ocultar Header y Footer en rutas específicas
   const hideLayout = location.pathname === '/login' || location.pathname.startsWith('/admin')
 
   return (
@@ -38,11 +36,7 @@ export default function App() {
               <Route path="/gorras" element={<Gorras />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/product/:id" element={<ProductDetail />} />
-              
-              {/* Ruta de Login (solo para admin) */}
               <Route path="/login" element={<Login />} />
-              
-              {/* Ruta protegida del Admin */}
               <Route 
                 path="/admin" 
                 element={

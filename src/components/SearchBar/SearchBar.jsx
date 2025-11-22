@@ -114,7 +114,6 @@ function SearchBar() {
       ref={searchRef}
       className={`search-bar ${isExpanded ? 'search-bar--expanded' : ''}`}
     >
-      {/* Botón de búsqueda (solo visible cuando está colapsado) */}
       {!isExpanded && (
         <button
           className="search-bar__toggle"
@@ -126,7 +125,6 @@ function SearchBar() {
         </button>
       )}
 
-      {/* Formulario de búsqueda (visible cuando está expandido) */}
       {isExpanded && (
         <form 
           className="search-bar__form" 
@@ -162,7 +160,6 @@ function SearchBar() {
             </button>
           </div>
 
-          {/* Sugerencias desplegables */}
           {isOpen && suggestions.length > 0 && (
             <div className="search-bar__suggestions" id="search-suggestions">
               <ul className="search-bar__list">
@@ -195,7 +192,6 @@ function SearchBar() {
             </div>
           )}
 
-          {/* Mensaje cuando no hay resultados */}
           {isOpen && searchTerm && suggestions.length === 0 && productsLoaded && (
             <div className="search-bar__no-results">
               <p>No encontramos productos para "{searchTerm}"</p>

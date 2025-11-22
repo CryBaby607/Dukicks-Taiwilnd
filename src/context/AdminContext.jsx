@@ -13,11 +13,9 @@ export const AdminProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Monitorear cambios de autenticación
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        // Verificar si es admin (puedes usar claims personalizados en producción)
         setAdminUser(currentUser)
       } else {
         setAdminUser(null)
@@ -28,7 +26,6 @@ export const AdminProvider = ({ children }) => {
     return unsubscribe
   }, [])
 
-  // Login para admin
   const login = async (email, password) => {
     try {
       setError(null)
@@ -42,7 +39,6 @@ export const AdminProvider = ({ children }) => {
     }
   }
 
-  // Logout
   const logout = async () => {
     try {
       setError(null)
@@ -55,10 +51,8 @@ export const AdminProvider = ({ children }) => {
     }
   }
 
-  // Verificar si hay admin autenticado
   const isAdminAuthenticated = () => !!adminUser
 
-  // Manejador de errores de Firebase
   const handleFirebaseError = (code) => {
     const errors = {
       'auth/user-not-found': 'Usuario no encontrado',

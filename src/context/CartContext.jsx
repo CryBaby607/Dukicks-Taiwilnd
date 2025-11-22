@@ -3,7 +3,6 @@ import { createContext, useContext, useState, useEffect } from 'react'
 const CartContext = createContext()
 
 export const CartProvider = ({ children }) => {
-
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem('dukicks_cart')
@@ -24,14 +23,12 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
-      // Buscar si ya existe el producto con la MISMA talla
       const existing = prevItems.find(item => 
         item.id === product.id && 
         item.size === product.size
       )
       
       if (existing) {
-        // Si existe, actualizar cantidad
         return prevItems.map(item =>
           item.id === product.id && item.size === product.size
             ? { ...item, quantity: Math.min(item.quantity + (product.quantity || 1), 99) }
@@ -39,7 +36,6 @@ export const CartProvider = ({ children }) => {
         )
       }
       
-      // Si no existe, agregar como nuevo item
       return [...prevItems, { ...product, quantity: product.quantity || 1 }]
     })
   }
@@ -103,12 +99,12 @@ export const CartProvider = ({ children }) => {
     updateQuantity,
     removeFromCart,
     clearCart,
-    isInCart,              
-    getProductQuantity,    
+    isInCart,
+    getProductQuantity,
     subtotal,
     total,
     itemCount,
-    uniqueItemCount,       
+    uniqueItemCount,
   }
 
   return (
