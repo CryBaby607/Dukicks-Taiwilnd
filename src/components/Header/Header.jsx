@@ -62,7 +62,7 @@ function Header() {
             <Link
               to="/cart"
               className="icon-btn cart-btn"
-              aria-label="Shopping cart"
+              aria-label="Carrito de compras"
               onClick={closeMenu}
             >
               <FontAwesomeIcon icon={faShoppingCart} />

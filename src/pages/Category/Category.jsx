@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useMemo, useEffect } from 'react'
 import { getProductsByCategory } from '../../utils/productService'
 import { sortProducts, getSortOptions } from '../../utils/sorting'
 import { getUniqueBrands, applyFilters } from '../../utils/filters'

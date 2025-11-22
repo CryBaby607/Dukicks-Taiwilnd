@@ -11,17 +11,15 @@ import {
   orderBy
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { validateImageFile } from '../utils/imageValidator'
 
 const PRODUCTS_COLLECTION = 'products'
 
 const uploadImageToCloudinary = async (imageFile) => {
   try {
-    if (!imageFile.type.startsWith('image/')) {
-      throw new Error('Solo se permiten archivos de imagen')
-    }
-
-    if (imageFile.size > 5 * 1024 * 1024) {
-      throw new Error('La imagen no debe superar 5MB')
+    const validationError = validateImageFile(imageFile)
+    if (validationError) {
+      throw new Error(validationError)
     }
 
     const formData = new FormData()

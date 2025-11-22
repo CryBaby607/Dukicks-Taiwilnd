@@ -22,6 +22,7 @@ import {
 import { formatPrice } from '../../utils/formatters'
 import { getProductImage } from '../../utils/imageUtils'
 import { SIZES_BY_CATEGORY } from '../../config/constants'
+import { validateImageFile } from '../../utils/imageValidator'
 import './AdminDashboard.css'
 
 function AdminDashboard() {
@@ -178,18 +179,12 @@ function AdminDashboard() {
     
     if (!file) return
 
-    if (!file.type.startsWith('image/')) {
+    // Usar el validador centralizado
+    const validationError = validateImageFile(file)
+    if (validationError) {
       setErrors(prev => ({
         ...prev,
-        image: 'Por favor selecciona un archivo de imagen válido'
-      }))
-      return
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors(prev => ({
-        ...prev,
-        image: 'El archivo no debe superar 5MB'
+        image: validationError
       }))
       return
     }
