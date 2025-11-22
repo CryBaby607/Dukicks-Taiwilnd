@@ -1,3 +1,5 @@
+import { calculateItemSubtotal } from '../utils/calculations'
+
 export const generateWhatsAppMessage = (cartItems, total) => {
   if (!cartItems || cartItems.length === 0) {
     return ''
@@ -10,7 +12,7 @@ export const generateWhatsAppMessage = (cartItems, total) => {
     message += `   Talla: ${item.size || 'N/A'}\n`
     message += `   Cantidad: ${item.quantity}\n`
     message += `   Precio: $${item.price.toLocaleString()}\n`
-    message += `   Subtotal: $${(item.price * item.quantity).toLocaleString()}\n\n`
+    message += `   Subtotal: $${calculateItemSubtotal(item.price, item.quantity).toLocaleString()}\n\n`
   })
 
   message += `━━━━━━━━━━━━━━━━\n`

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { calculateItemSubtotal } from '../utils/calculations'
 
 const CartContext = createContext()
 
@@ -79,7 +80,7 @@ export const CartProvider = ({ children }) => {
   }
 
   const subtotal = cartItems.reduce((acc, item) => {
-    return acc + (item.price * item.quantity)
+    return acc + calculateItemSubtotal(item.price, item.quantity)
   }, 0)
 
   const total = subtotal 
