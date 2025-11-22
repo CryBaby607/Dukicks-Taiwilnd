@@ -1,4 +1,3 @@
-/* ===== PÁGINA DE LOGIN ===== */
 .login-page {
   position: relative;
   min-height: 100vh;
@@ -10,7 +9,6 @@
   overflow: hidden;
 }
 
-/* ===== FONDO DECORATIVO ===== */
 .login-background {
   position: absolute;
   top: 0;
@@ -35,7 +33,6 @@
   100% { transform: translate(50px, 50px); }
 }
 
-/* ===== CONTENEDOR ===== */
 .login-container {
   position: relative;
   z-index: 10;
@@ -56,7 +53,6 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== ENCABEZADO ===== */
 .login-header {
   text-align: center;
   margin-bottom: var(--spacing-2xl);
@@ -75,7 +71,6 @@
 .logo-du { color: var(--primary); }
 .logo-kicks { color: var(--accent); }
 
-/* ===== ALERTAS ===== */
 .alert {
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius-md);
@@ -91,7 +86,6 @@
   border: 1px solid var(--error);
 }
 
-/* ===== FORMULARIO ===== */
 .login-form {
   display: flex;
   flex-direction: column;
@@ -112,7 +106,6 @@
   letter-spacing: 0.5px;
 }
 
-/* ===== INPUT WRAPPER ===== */
 .input-wrapper {
   position: relative;
   display: flex;
@@ -144,7 +137,6 @@
   flex-shrink: 0;
 }
 
-/* ===== INPUT ===== */
 .form-input {
   flex: 1;
   background: transparent;
@@ -174,7 +166,6 @@
   cursor: not-allowed;
 }
 
-/* ===== TOGGLE PASSWORD ===== */
 .toggle-password {
   background: none;
   border: none;
@@ -200,14 +191,12 @@
   cursor: not-allowed;
 }
 
-/* ===== MENSAJES DE ERROR ===== */
 .error-message {
   font-size: var(--fs-xs);
   color: var(--error);
   font-weight: var(--fw-semibold);
 }
 
-/* ===== BOTÓN LOGIN ===== */
 .btn-login {
   width: 100%;
   padding: var(--spacing-lg) var(--spacing-xl);
@@ -251,7 +240,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .login-card { padding: var(--spacing-2xl); }
   .login-logo { font-size: var(--fs-3xl); }

@@ -1,22 +1,3 @@
-export const formatPrice = (price) => {
-  if (typeof price !== 'number' || price < 0) {
-    console.warn('formatPrice recibió valor inválido:', price)
-    return '$0'
-  }
-
-  return new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: 'MXN',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(price)
-}
-
-export const formatPrices = (prices) => {
-  if (!Array.isArray(prices)) return []
-  return prices.map(formatPrice)
-}
-
 export const calculateDiscountedPrice = (price, discount = 0) => {
   if (typeof price !== 'number' || price < 0) {
     console.warn('calculateDiscountedPrice: precio inválido', price)
@@ -30,7 +11,27 @@ export const calculateDiscountedPrice = (price, discount = 0) => {
 
   if (discount === 0) return price
 
-  return Math.round(price * (1 - discount / 100))
+  const discountedPrice = price * (1 - discount / 100)
+  return Math.round(discountedPrice * 100) / 100
+}
+
+export const formatPrice = (price) => {
+  if (typeof price !== 'number' || price < 0) {
+    console.warn('formatPrice recibió valor inválido:', price)
+    return '$0'
+  }
+
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  }).format(price)
+}
+
+export const formatPrices = (prices) => {
+  if (!Array.isArray(prices)) return []
+  return prices.map(formatPrice)
 }
 
 export const calculateSavings = (price, discount = 0) => {
