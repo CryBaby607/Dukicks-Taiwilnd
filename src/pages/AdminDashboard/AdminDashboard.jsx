@@ -22,7 +22,7 @@ import {
 import { formatPrice } from '../../utils/formatters'
 import { getProductImage } from '../../utils/imageUtils'
 import { SIZES_BY_CATEGORY } from '../../config/constants'
-import { validateImageFile } from '../../utils/imageValidator'
+import { validateImageFile } from '../../validators/imageValidator'
 import './AdminDashboard.css'
 
 function AdminDashboard() {

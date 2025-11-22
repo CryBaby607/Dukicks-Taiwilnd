@@ -406,8 +406,7 @@
 
 .search-bar__toggle:focus-visible,
 .search-bar__close:focus-visible,
-.search-bar__suggestion-item:focus-visible,
-.search-bar__see-all:focus-visible {
+.search-bar__suggestion-item:focus-visible {
   outline: 2px solid var(--secondary);
   outline-offset: 2px;
 }

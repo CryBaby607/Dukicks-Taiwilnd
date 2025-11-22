@@ -23,19 +23,18 @@ function SearchBar() {
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
 
   useEffect(() => {
+    const loadAllProducts = async () => {
+      try {
+        const products = await getAllProducts()
+        setAllProducts(products)
+        setProductsLoaded(true)
+      } catch (error) {
+        console.error('Error al cargar productos:', error)
+        setProductsLoaded(true)
+      }
+    }
     loadAllProducts()
   }, [])
-
-  const loadAllProducts = async () => {
-    try {
-      const products = await getAllProducts()
-      setAllProducts(products)
-      setProductsLoaded(true)
-    } catch (error) {
-      console.error('Error al cargar productos:', error)
-      setProductsLoaded(true)
-    }
-  }
 
   useEffect(() => {
     if (debouncedSearchTerm.trim().length === 0) {
@@ -82,30 +81,26 @@ function SearchBar() {
   }
 
   useEffect(() => {
+    if (!isExpanded) return
+
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
-        if (isExpanded) {
-          handleCollapse()
-        }
-      }
-    }
-
-    if (isExpanded) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isExpanded, handleCollapse])
-
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape' && isExpanded) {
         handleCollapse()
       }
     }
 
-    if (isExpanded) {
-      document.addEventListener('keydown', handleEscape)
-      return () => document.removeEventListener('keydown', handleEscape)
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        handleCollapse()
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEscape)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
     }
   }, [isExpanded, handleCollapse])
 

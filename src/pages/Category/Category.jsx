@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { getProductsByCategory } from '../../utils/productService'
 import { sortProducts, getSortOptions } from '../../utils/sorting'
 import { getUniqueBrands, applyFilters } from '../../utils/filters'
@@ -7,22 +7,22 @@ import './Category.css'
 
 function CategoryPage({ category }) {
   const [selectedBrand, setSelectedBrand] = useState('Todas')
-  const [sortBy, setSortBy] = useState('newest')
+  const [sortBy, setSortBy] = useState('price-low')
   const [products, setProducts] = useState([])
 
   useEffect(() => {
+    const loadCategoryProducts = async () => {
+      try {
+        const data = await getProductsByCategory(category)
+        setProducts(data)
+      } catch (err) {
+        console.error('Error al cargar productos:', err)
+        setProducts([])
+      }
+    }
+
     loadCategoryProducts()
   }, [category])
-
-  const loadCategoryProducts = async () => {
-    try {
-      const data = await getProductsByCategory(category)
-      setProducts(data)
-    } catch (err) {
-      console.error('Error al cargar productos:', err)
-      setProducts([])
-    }
-  }
 
   const brandsInCategory = useMemo(
     () => getUniqueBrands(products, true),

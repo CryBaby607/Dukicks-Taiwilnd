@@ -1,21 +1,3 @@
-export const searchProducts = (products, query) => {
-  if (!Array.isArray(products) || !query?.trim()) return products
-
-  const normalizedQuery = query.toLowerCase().trim()
-
-  return products.filter(p => {
-    const fields = [
-      p.brand || '',
-      p.model || '',
-      p.name || '',
-      p.description || '',
-      p.category || '',
-      p.type || ''
-    ]
-    return fields.some(f => String(f).toLowerCase().includes(normalizedQuery))
-  })
-}
-
 export const searchProductsWithRelevance = (products, query) => {
   if (!Array.isArray(products) || !query?.trim()) return products
 

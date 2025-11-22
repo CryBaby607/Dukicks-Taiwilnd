@@ -23,10 +23,3 @@ export const getSortOptions = () => [
   { value: 'name-asc', label: 'Nombre (A-Z)' },
   { value: 'name-desc', label: 'Nombre (Z-A)' }
 ]
-
-export const isSortStrategyValid = (sortBy) => sortBy in SORT_STRATEGIES
-
-export const getSortLabel = (sortBy) => {
-  const option = getSortOptions().find(opt => opt.value === sortBy)
-  return option ? option.label : 'Ordenamiento desconocido'
-}

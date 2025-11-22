@@ -11,7 +11,7 @@ import {
   orderBy
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { validateImageFile } from '../utils/imageValidator'
+import { validateImageFile } from '../validators/imageValidator'
 
 const PRODUCTS_COLLECTION = 'products'
 
