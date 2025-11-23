@@ -1,16 +1,3 @@
-export const getProductImage = (product) => {
-  if (!product || typeof product !== 'object') {
-    console.warn('getProductImage: product inválido', product)
-    return null
-  }
-  
-  if (Array.isArray(product.images) && product.images.length > 0) {
-    return product.images[0]
-  }
-  
-  return product.image || null
-}
-
 export const getProductImages = (product) => {
   if (!product || typeof product !== 'object') {
     console.warn('getProductImages: product inválido', product)
@@ -26,6 +13,11 @@ export const getProductImages = (product) => {
   }
   
   return []
+}
+
+export const getProductImage = (product) => {
+  const images = getProductImages(product)
+  return images[0] || null
 }
 
 export const getProductName = (product) => {

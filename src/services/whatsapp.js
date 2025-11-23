@@ -1,4 +1,5 @@
 import { calculateItemSubtotal } from '../helpers/calculations'
+import { formatPrice } from '../utils/formatters'
 
 export const generateWhatsAppMessage = (cartItems, total) => {
   if (!cartItems || cartItems.length === 0) {
@@ -11,12 +12,12 @@ export const generateWhatsAppMessage = (cartItems, total) => {
     message += `${index + 1}. *${item.name}*\n`
     message += `   Talla: ${item.size || 'N/A'}\n`
     message += `   Cantidad: ${item.quantity}\n`
-    message += `   Precio: $${item.price.toLocaleString()}\n`
-    message += `   Subtotal: $${calculateItemSubtotal(item.price, item.quantity).toLocaleString()}\n\n`
+    message += `   Precio: ${formatPrice(item.price)}\n`
+    message += `   Subtotal: ${formatPrice(calculateItemSubtotal(item.price, item.quantity))}\n\n`
   })
 
   message += `━━━━━━━━━━━━━━━━\n`
-  message += `*TOTAL: $${total.toLocaleString()} MXN*\n\n`
+  message += `*TOTAL: ${formatPrice(total)} MXN*\n\n`
   message += `_Gracias por tu preferencia_ 🙌`
 
   return encodeURIComponent(message)

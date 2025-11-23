@@ -41,22 +41,6 @@ export const calculateSavings = (price, discount = 0) => {
   return price - discountedPrice
 }
 
-export const getPriceBreakdown = (price, discount = 0) => {
-  const finalPrice = calculateDiscountedPrice(price, discount)
-  const saved = calculateSavings(price, discount)
-
-  return {
-    original: formatPrice(price),
-    originalRaw: price,
-    discount,
-    discountAmount: saved,
-    final: formatPrice(finalPrice),
-    finalRaw: finalPrice,
-    saved: formatPrice(saved),
-    hasDiscount: discount > 0
-  }
-}
-
 export const getFinalPrice = (product) => {
   if (!product) return 0
   

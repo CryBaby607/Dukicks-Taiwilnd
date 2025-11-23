@@ -21,18 +21,15 @@ import {
 } from '../../services/product'
 import { formatPrice } from '../../utils/formatters'
 import { getProductImage } from '../../utils/imageUtils'
-// CAMBIO: Importación desde el nuevo archivo de constantes centralizado
 import { SIZES, PRODUCT_CATEGORIES } from '../../constants/product.constants' 
-
-// Nota: Asegúrate de haber movido imageValidator a la carpeta helpers como sugerí, 
-// o ajusta esta ruta si decidiste dejarlo en validators.
-import { validateImageFile } from '../../helpers/validation' 
-import { handleError } from '../../services/errorService'
+import { validateImageFile, validateRequired } from '../../helpers/validation' 
+import { useErrorHandler } from '../../hooks/useErrorHandler'
 import './AdminDashboard.css'
 
 function AdminDashboard() {
   const { adminUser, logout } = useAdmin()
   const navigate = useNavigate()
+  const { error: globalError, handleError, clearError } = useErrorHandler()
   
   const [products, setProducts] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -77,7 +74,7 @@ function AdminDashboard() {
       const allProducts = await getAllProducts()
       setProducts(allProducts)
     } catch (error) {
-      alert(handleError(error, 'Cargando Productos'))
+      handleError(error, 'Cargando Productos')
     } finally {
       setLoading(false)
     }
@@ -160,7 +157,6 @@ function AdminDashboard() {
         [name]: type === 'checkbox' ? checked : value
       }
 
-      // Lógica para limpiar o asignar tallas según categoría
       if (name === "category") {
         if (value === PRODUCT_CATEGORIES.GORRAS) {
           updated.sizes = ['Única']
@@ -243,19 +239,13 @@ function AdminDashboard() {
   }
 
   const validateForm = () => {
-    const newErrors = {}
-
-    if (!formData.brand.trim()) newErrors.brand = 'La marca es requerida'
-    if (!formData.model.trim()) newErrors.model = 'El modelo es requerido'
+  
+    const newErrors = validateRequired(formData, ['brand', 'model', 'description'])
 
     if (!formData.price) {
       newErrors.price = 'El precio es requerido'
     } else if (parseFloat(formData.price) <= 0) {
       newErrors.price = 'Ingresa un precio válido (mayor a 0)'
-    }
-
-    if (!formData.description.trim()) {
-      newErrors.description = 'La descripción es requerida'
     }
 
     if (formData.sizes.length === 0) {
@@ -313,16 +303,14 @@ function AdminDashboard() {
 
       if (editingProduct) {
         await updateProduct(editingProduct.id, productData)
-        alert('✓ Producto actualizado exitosamente')
       } else {
         await createProduct(productData)
-        alert('✓ Producto agregado exitosamente')
       }
 
       await loadProducts()
       closeModal()
     } catch (error) {
-      alert(handleError(error, 'Guardando Producto'))
+      handleError(error, 'Guardando Producto')
     } finally {
       setSaving(false)
     }
@@ -332,10 +320,9 @@ function AdminDashboard() {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       try {
         await deleteProduct(id)
-        alert('✓ Producto eliminado exitosamente')
         await loadProducts()
       } catch (error) {
-        alert(handleError(error, 'Eliminando Producto'))
+        handleError(error, 'Eliminando Producto')
       }
     }
   }
@@ -344,6 +331,39 @@ function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
+      {globalError && (
+        <div style={{
+          backgroundColor: '#fee2e2', 
+          color: '#dc2626', 
+          padding: '1rem', 
+          textAlign: 'center', 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          zIndex: 2000,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <span>{globalError}</span>
+          <button 
+            onClick={clearError} 
+            style={{
+              marginLeft: '1rem', 
+              background:'none', 
+              border:'none', 
+              cursor:'pointer', 
+              fontSize: '1.2rem',
+              color: '#dc2626'
+            }}
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
+      )}
+
       <header className="admin-header">
         <div className="container">
           <div className="admin-header-content">
