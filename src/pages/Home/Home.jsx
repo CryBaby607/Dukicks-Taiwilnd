@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-// ✅ CORRECCIÓN: Importar desde el nuevo servicio
 import { getFeaturedProducts } from '../../services/product'
 import ProductCard from '../../components/ProductCard/ProductCard'
 import './Home.css'

@@ -18,7 +18,6 @@ function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
 
-  // Cargar producto
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -31,7 +30,6 @@ function ProductDetail() {
 
         setProduct(productData)
       } catch (err) {
-        console.error('Error al cargar:', err)
         navigate('/', { replace: true })
       }
     }
@@ -72,7 +70,6 @@ function ProductDetail() {
       <div className="container">
         <div className="detail-wrapper">
 
-          {/* Galería */}
           <div className="detail-gallery">
             <div className="gallery-main">
               {product.discount > 0 && (
@@ -105,7 +102,6 @@ function ProductDetail() {
             )}
           </div>
 
-          {/* Info */}
           <div className="detail-info">
 
             <span className="detail-category">{product.category}</span>

@@ -64,7 +64,7 @@ function Login() {
 
       <div className="login-container">
         <div className="login-card">
-          {/* Logo */}
+
           <div className="login-header">
             <div className="login-logo">
               <span className="logo-du">DU</span>
@@ -72,7 +72,6 @@ function Login() {
             </div>
           </div>
 
-          {/* Formulario */}
           <form onSubmit={handleSubmit} className="login-form" noValidate>
             {error && (
               <div className="alert alert-error">
@@ -80,7 +79,6 @@ function Login() {
               </div>
             )}
 
-            {/* Campo Email */}
             <div className="form-group">
               <label htmlFor="email" className="form-label">Correo Electrónico</label>
               <div className={`input-wrapper ${touched.email && !isEmailValid && email ? 'error' : ''}`}>
@@ -101,7 +99,6 @@ function Login() {
               )}
             </div>
 
-            {/* Campo Contraseña */}
             <div className="form-group">
               <label htmlFor="password" className="form-label">Contraseña</label>
               <div className={`input-wrapper ${touched.password && !isPasswordValid && password ? 'error' : ''}`}>

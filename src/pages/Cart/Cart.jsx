@@ -123,7 +123,6 @@ function Cart() {
             </div>
           </section>
 
-          {/* Resumen del carrito */}
           <aside className="cart-summary">
             <div className="summary-card">
               <h2 className="summary-title">Resumen</h2>
