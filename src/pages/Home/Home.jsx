@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getFeaturedProducts } from '../../utils/productService'
+// ✅ CAMBIO: Importar desde services/product
+import { getFeaturedProducts } from '../../services/product'
 import ProductCard from '../../components/ProductCard/ProductCard'
 import './Home.css'
 

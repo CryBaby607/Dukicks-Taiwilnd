@@ -3,10 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 import { useCart } from '../../context/CartContext'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../../config/firebase'
+import { getProductById } from '../../services/product'
 import { formatPrice, getFinalPrice, calculateSavings } from '../../utils/formatters'
-import { getProductImages, getProductName } from '../../utils/imageUtils' // ✅ NUEVO IMPORT
+import { getProductImages, getProductName } from '../../utils/imageUtils'
 import './ProductDetail.css'
 
 function ProductDetail() {
@@ -23,15 +22,14 @@ function ProductDetail() {
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const ref = doc(db, 'products', id)
-        const snap = await getDoc(ref)
+        const productData = await getProductById(id)
 
-        if (!snap.exists()) {
+        if (!productData) {
           navigate('/', { replace: true })
           return
         }
 
-        setProduct({ id: snap.id, ...snap.data() })
+        setProduct(productData)
       } catch (err) {
         console.error('Error al cargar:', err)
         navigate('/', { replace: true })
@@ -41,13 +39,12 @@ function ProductDetail() {
     loadProduct()
   }, [id, navigate])
 
-  // No renderizar nada si aún no hay producto
   if (!product) return null
 
-  const images = getProductImages(product) // ✅ USAR UTILIDAD
+  const images = getProductImages(product)
   const finalPrice = getFinalPrice(product)
   const savings = calculateSavings(product.price, product.discount)
-  const productName = getProductName(product) // ✅ USAR UTILIDAD
+  const productName = getProductName(product)
 
   const handleAddToCart = () => {
     if (product.sizes?.length > 0 && !selectedSize) {

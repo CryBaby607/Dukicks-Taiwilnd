@@ -6,10 +6,10 @@ import {
   faTrash, 
   faSignOutAlt, 
   faTimes, 
-  faBoxOpen,
-  faSpinner,
-  faImage,
-  faX
+  faBoxOpen, 
+  faSpinner, 
+  faImage, 
+  faX 
 } from '@fortawesome/free-solid-svg-icons'
 import { useAdmin } from '../../context/AdminContext'
 import { useNavigate } from 'react-router-dom'
@@ -18,7 +18,7 @@ import {
   createProduct, 
   updateProduct, 
   deleteProduct 
-} from '../../utils/productService'
+} from '../../services/product'
 import { formatPrice } from '../../utils/formatters'
 import { getProductImage } from '../../utils/imageUtils'
 import { SIZES_BY_CATEGORY } from '../../config/constants'
@@ -177,6 +177,7 @@ function AdminDashboard() {
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0]
+    
     if (!file) return
 
     const validationError = validateImageFile(file)
@@ -214,6 +215,7 @@ function AdminDashboard() {
   const handleSizeToggle = (size) => {
     setFormData(prev => {
       const isSelected = prev.sizes.includes(size)
+      
       if (isSelected) {
         return {
           ...prev,

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { formatPrice } from '../../utils/formatters'
-import { sendOrderViaWhatsApp } from '../../utils/whatsapp'
+import { sendOrderViaWhatsApp } from '../../services/whatsapp'
 import './Cart.css'
 
 function Cart() {
@@ -140,7 +140,6 @@ function Cart() {
                 </span>
               </div>
 
-              {/* ✅ BOTÓN DE WHATSAPP */}
               <button 
                 className="btn btn-primary btn-checkout btn-whatsapp"
                 onClick={handleWhatsAppCheckout}
