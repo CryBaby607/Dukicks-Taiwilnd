@@ -1,27 +1,18 @@
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faPlus, 
-  faEdit, 
-  faTrash, 
-  faSignOutAlt, 
-  faTimes, 
-  faBoxOpen, 
-  faSpinner, 
-  faImage, 
-  faX 
+  faPlus, faEdit, faTrash, faSignOutAlt, faTimes, 
+  faBoxOpen, faSpinner, faImage, faX 
 } from '@fortawesome/free-solid-svg-icons'
 import { useAdmin } from '../../context/AdminContext'
 import { useNavigate } from 'react-router-dom'
 import { 
-  getAllProducts, 
-  createProduct, 
-  updateProduct, 
-  deleteProduct 
-} from '../../services/product'
+  getAllProducts, createProduct, updateProduct, deleteProduct 
+} from '../../constants/product'
 import { formatPrice } from '../../utils/formatters'
 import { getProductImage } from '../../utils/imageUtils'
-import { SIZES_BY_CATEGORY } from '../../config/constants'
+// ✅ CAMBIO: Nuevos imports de constantes
+import { SIZES, PRODUCT_CATEGORIES } from '../../constants/products'
 import { validateImageFile } from '../../validators/imageValidator'
 import { handleError } from '../../services/errorService'
 import './AdminDashboard.css'
@@ -39,10 +30,11 @@ function AdminDashboard() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [imagePreview, setImagePreview] = useState(null)
   
+  // Estado inicial usando constante si se desea, o string directo
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
-    category: 'Hombre',
+    category: PRODUCT_CATEGORIES.HOMBRE,
     price: '',
     discount: '0',
     description: '',
@@ -52,20 +44,20 @@ function AdminDashboard() {
     sizes: []
   })
 
+  // ... (useEffect y loadProducts iguales)
+  useEffect(() => { loadProducts() }, [])
+  
+  // ... (Logica de click outside igual)
   useEffect(() => {
-    loadProducts()
-  }, [])
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (showUserMenu && !event.target.closest('.user-menu-container')) {
-        setShowUserMenu(false)
+      const handleClickOutside = (event) => {
+        if (showUserMenu && !event.target.closest('.user-menu-container')) {
+          setShowUserMenu(false)
+        }
       }
-    }
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }, [showUserMenu])
 
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [showUserMenu])
 
   const loadProducts = async () => {
     try {
@@ -86,16 +78,14 @@ function AdminDashboard() {
     }
   }
 
-  const toggleUserMenu = () => {
-    setShowUserMenu(!showUserMenu)
-  }
+  const toggleUserMenu = () => setShowUserMenu(!showUserMenu)
 
   const openAddModal = () => {
     setEditingProduct(null)
     setFormData({
       brand: '',
       model: '',
-      category: 'Hombre',
+      category: PRODUCT_CATEGORIES.HOMBRE,
       price: '',
       discount: '0',
       description: '',
@@ -131,10 +121,11 @@ function AdminDashboard() {
   const closeModal = () => {
     setIsModalOpen(false)
     setEditingProduct(null)
+    // Reset form
     setFormData({
       brand: '',
       model: '',
-      category: 'Hombre',
+      category: PRODUCT_CATEGORIES.HOMBRE,
       price: '',
       discount: '0',
       description: '',
@@ -156,103 +147,71 @@ function AdminDashboard() {
         [name]: type === 'checkbox' ? checked : value
       }
 
-      if (name === "category" && value === "Gorras") {
-        updated.sizes = ['Única']
-      }
-
-      if (name === "category" && value !== "Gorras" && prev.category === "Gorras") {
-        updated.sizes = []
+      // Lógica específica al cambiar categoría
+      if (name === "category") {
+        if (value === PRODUCT_CATEGORIES.GORRAS) {
+          updated.sizes = ['Única']
+        } else if (prev.category === PRODUCT_CATEGORIES.GORRAS && value !== PRODUCT_CATEGORIES.GORRAS) {
+          // Si cambiamos DE gorras A otra cosa, limpiar tallas
+          updated.sizes = []
+        }
       }
 
       return updated
     })
 
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }))
+      setErrors(prev => ({ ...prev, [name]: '' }))
     }
   }
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0]
-    
     if (!file) return
 
     const validationError = validateImageFile(file)
     if (validationError) {
-      setErrors(prev => ({
-        ...prev,
-        image: validationError
-      }))
+      setErrors(prev => ({ ...prev, image: validationError }))
       return
     }
 
     const reader = new FileReader()
     reader.onload = (event) => {
       setImagePreview(event.target.result)
-      setFormData(prev => ({
-        ...prev,
-        imageFile: file
-      }))
-      setErrors(prev => ({
-        ...prev,
-        image: ''
-      }))
+      setFormData(prev => ({ ...prev, imageFile: file }))
+      setErrors(prev => ({ ...prev, image: '' }))
     }
     reader.readAsDataURL(file)
   }
 
   const removeImage = () => {
     setImagePreview(null)
-    setFormData(prev => ({
-      ...prev,
-      imageFile: null
-    }))
+    setFormData(prev => ({ ...prev, imageFile: null }))
   }
 
   const handleSizeToggle = (size) => {
     setFormData(prev => {
       const isSelected = prev.sizes.includes(size)
-      
       if (isSelected) {
-        return {
-          ...prev,
-          sizes: prev.sizes.filter(s => s !== size)
-        }
+        return { ...prev, sizes: prev.sizes.filter(s => s !== size) }
       } else {
-        return {
-          ...prev,
-          sizes: [...prev.sizes, size]
-        }
+        return { ...prev, sizes: [...prev.sizes, size] }
       }
     })
-
-    if (errors.sizes) {
-      setErrors(prev => ({
-        ...prev,
-        sizes: ''
-      }))
-    }
+    if (errors.sizes) setErrors(prev => ({ ...prev, sizes: '' }))
   }
 
   const validateForm = () => {
     const newErrors = {}
-
     if (!formData.brand.trim()) newErrors.brand = 'La marca es requerida'
     if (!formData.model.trim()) newErrors.model = 'El modelo es requerido'
-
     if (!formData.price) {
       newErrors.price = 'El precio es requerido'
     } else if (parseFloat(formData.price) <= 0) {
-      newErrors.price = 'Ingresa un precio válido (mayor a 0)'
+      newErrors.price = 'Ingresa un precio válido'
     }
-
-    if (!formData.description.trim()) {
-      newErrors.description = 'La descripción es requerida'
-    }
-
+    if (!formData.description.trim()) newErrors.description = 'La descripción es requerida'
+    
     if (formData.sizes.length === 0) {
       newErrors.sizes = 'Selecciona al menos una talla'
     }
@@ -264,13 +223,8 @@ function AdminDashboard() {
       }
     }
 
-    if (!editingProduct && !formData.imageFile) {
-      newErrors.image = 'Debes subir una imagen'
-    }
-
-    if (editingProduct && !formData.imageFile && !imagePreview) {
-      newErrors.image = 'Debes mantener o cargar una imagen'
-    }
+    if (!editingProduct && !formData.imageFile) newErrors.image = 'Debes subir una imagen'
+    if (editingProduct && !formData.imageFile && !imagePreview) newErrors.image = 'Debes mantener o cargar una imagen'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -278,11 +232,9 @@ function AdminDashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (!validateForm()) return
 
     setSaving(true)
-
     try {
       const price = parseFloat(formData.price)
       const discount = formData.discount ? parseFloat(formData.discount) : 0
@@ -297,7 +249,7 @@ function AdminDashboard() {
         isNew: formData.isNew,
         isFeatured: formData.isFeatured,
         sizes: formData.sizes,
-        type: 'Tenis'
+        type: 'Tenis' // Podrías usar PRODUCT_TYPES.TENIS aquí si lo integras más
       }
 
       if (formData.imageFile) {
@@ -324,7 +276,7 @@ function AdminDashboard() {
   }
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+    if (window.confirm('¿Estás seguro de eliminar este producto?')) {
       try {
         await deleteProduct(id)
         alert('✓ Producto eliminado exitosamente')
@@ -335,7 +287,8 @@ function AdminDashboard() {
     }
   }
 
-  const availableSizes = SIZES_BY_CATEGORY[formData.category] || []
+  // ✅ USO DE CONSTANTE
+  const availableSizes = SIZES[formData.category] || []
 
   return (
     <div className="admin-dashboard">
@@ -352,16 +305,12 @@ function AdminDashboard() {
                   onClick={toggleUserMenu}
                   role="button"
                   tabIndex={0}
-                  aria-label="Menú de usuario"
                 >
                   {adminUser?.email?.charAt(0).toUpperCase() || 'A'}
                 </div>
                 {showUserMenu && (
                   <div className="user-dropdown">
-                    <button 
-                      onClick={handleLogout} 
-                      className="dropdown-item"
-                    >
+                    <button onClick={handleLogout} className="dropdown-item">
                       <FontAwesomeIcon icon={faSignOutAlt} />
                       <span>Cerrar Sesión</span>
                     </button>
@@ -419,13 +368,10 @@ function AdminDashboard() {
                     <tr key={product.id}>
                       <td className="product-image-cell">
                         <img 
-                          src={getProductImage(product) || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop'}
+                          src={getProductImage(product) || 'https://via.placeholder.com/150'}
                           alt={product.model}
                           className="product-thumbnail"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.src = 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop'
-                          }}
+                          onError={(e) => { e.target.src = 'https://via.placeholder.com/150' }}
                         />
                       </td>
                       <td>{product.brand}</td>
@@ -437,22 +383,16 @@ function AdminDashboard() {
                           <span className="state-badge state-badge-with-discount">
                             -{product.discount}%
                           </span>
-                        ) : (
-                          <span className="text-muted">—</span>
-                        )}
+                        ) : <span className="text-muted">—</span>}
                       </td>
                       <td>
                         <div className="sizes-display">
-                          {product.sizes && product.sizes.length > 0 ? (
-                            product.sizes.slice(0, 3).map((size, index) => (
-                              <span key={index} className="size-tag">
-                                {size}
-                              </span>
+                          {product.sizes?.length > 0 ? (
+                            product.sizes.slice(0, 3).map((size, i) => (
+                              <span key={i} className="size-tag">{size}</span>
                             ))
-                          ) : (
-                            <span className="text-muted">Sin tallas</span>
-                          )}
-                          {product.sizes && product.sizes.length > 3 && (
+                          ) : <span className="text-muted">Sin tallas</span>}
+                          {product.sizes?.length > 3 && (
                             <span className="size-tag size-tag-more">
                               +{product.sizes.length - 3}
                             </span>
@@ -461,28 +401,16 @@ function AdminDashboard() {
                       </td>
                       <td>
                         <div className="state-badges-container">
-                          {product.isNew && (
-                            <span className="state-badge state-badge-new">NUEVO</span>
-                          )}
-                          {product.isFeatured && (
-                            <span className="state-badge state-badge-featured">DESTACADO</span>
-                          )}
+                          {product.isNew && <span className="state-badge state-badge-new">NUEVO</span>}
+                          {product.isFeatured && <span className="state-badge state-badge-featured">DESTACADO</span>}
                         </div>
                       </td>
                       <td>
                         <div className="product-actions">
-                          <button 
-                            onClick={() => openEditModal(product)}
-                            className="btn-action btn-edit"
-                            title="Editar producto"
-                          >
+                          <button onClick={() => openEditModal(product)} className="btn-action btn-edit">
                             <FontAwesomeIcon icon={faEdit} />
                           </button>
-                          <button 
-                            onClick={() => handleDelete(product.id)}
-                            className="btn-action btn-delete"
-                            title="Eliminar producto"
-                          >
+                          <button onClick={() => handleDelete(product.id)} className="btn-action btn-delete">
                             <FontAwesomeIcon icon={faTrash} />
                           </button>
                         </div>
@@ -512,18 +440,14 @@ function AdminDashboard() {
               <div className="modal-body">
                 <div className="product-form">
 
+                  {/* Imagen */}
                   <div className="form-group">
                     <label className="form-label">Imagen del Producto *</label>
                     <div className="image-upload-container">
                       {imagePreview ? (
                         <div className="image-preview">
                           <img src={imagePreview} alt="Preview" />
-                          <button
-                            type="button"
-                            onClick={removeImage}
-                            className="btn-remove-image"
-                            title="Remover imagen"
-                          >
+                          <button type="button" onClick={removeImage} className="btn-remove-image">
                             <FontAwesomeIcon icon={faX} />
                           </button>
                         </div>
@@ -531,15 +455,9 @@ function AdminDashboard() {
                         <label className="image-upload-area">
                           <div className="upload-content">
                             <FontAwesomeIcon icon={faImage} className="upload-icon" />
-                            <span className="upload-text">Haz clic para subir una imagen</span>
-                            <small>o arrastra aquí</small>
+                            <span className="upload-text">Haz clic para subir</span>
                           </div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="file-input"
-                          />
+                          <input type="file" accept="image/*" onChange={handleImageChange} className="file-input" />
                         </label>
                       )}
                     </div>
@@ -548,70 +466,34 @@ function AdminDashboard() {
 
                   <div className="form-group">
                     <label className="form-label">Marca *</label>
-                    <input
-                      type="text"
-                      name="brand"
-                      className="form-input"
-                      placeholder="Nike, Adidas..."
-                      value={formData.brand}
-                      onChange={handleInputChange}
-                    />
+                    <input type="text" name="brand" className="form-input" value={formData.brand} onChange={handleInputChange} />
                     {errors.brand && <span className="error-message">{errors.brand}</span>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Modelo *</label>
-                    <input
-                      type="text"
-                      name="model"
-                      className="form-input"
-                      placeholder="Air Max 270"
-                      value={formData.model}
-                      onChange={handleInputChange}
-                    />
+                    <input type="text" name="model" className="form-input" value={formData.model} onChange={handleInputChange} />
                     {errors.model && <span className="error-message">{errors.model}</span>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Categoría</label>
-                    <select
-                      name="category"
-                      className="form-input"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                    >
-                      <option value="Hombre">Hombre</option>
-                      <option value="Mujer">Mujer</option>
-                      <option value="Gorras">Gorras</option>
+                    <select name="category" className="form-input" value={formData.category} onChange={handleInputChange}>
+                      <option value={PRODUCT_CATEGORIES.HOMBRE}>Hombre</option>
+                      <option value={PRODUCT_CATEGORIES.MUJER}>Mujer</option>
+                      <option value={PRODUCT_CATEGORIES.GORRAS}>Gorras</option>
                     </select>
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Precio (MXN) *</label>
-                    <input
-                      type="number"
-                      name="price"
-                      className="form-input"
-                      placeholder="2999"
-                      value={formData.price}
-                      onChange={handleInputChange}
-                      min="0"
-                      step="0.01"
-                    />
+                    <input type="number" name="price" className="form-input" value={formData.price} onChange={handleInputChange} min="0" step="0.01" />
                     {errors.price && <span className="error-message">{errors.price}</span>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Descuento (%)</label>
-                    <input
-                      type="number"
-                      name="discount"
-                      className="form-input"
-                      value={formData.discount}
-                      onChange={handleInputChange}
-                      min="0"
-                      max="100"
-                    />
+                    <input type="number" name="discount" className="form-input" value={formData.discount} onChange={handleInputChange} min="0" max="100" />
                     {errors.discount && <span className="error-message">{errors.discount}</span>}
                   </div>
 
@@ -624,52 +506,32 @@ function AdminDashboard() {
                           type="button"
                           onClick={() => handleSizeToggle(size)}
                           className={`size-button ${formData.sizes.includes(size) ? 'size-button-active' : ''}`}
-                          disabled={formData.category === 'Gorras'}
+                          disabled={formData.category === PRODUCT_CATEGORIES.GORRAS}
                         >
                           {size}
                         </button>
                       ))}
                     </div>
                     {errors.sizes && <span className="error-message">{errors.sizes}</span>}
-                    {formData.sizes.length > 0 && (
-                      <div className="sizes-selected">
-                        <small>Seleccionadas: {formData.sizes.join(', ')}</small>
-                      </div>
-                    )}
+                    {formData.sizes.length > 0 && <div className="sizes-selected"><small>Seleccionadas: {formData.sizes.join(', ')}</small></div>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Descripción *</label>
-                    <textarea
-                      name="description"
-                      className="form-input"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows="4"
-                    />
+                    <textarea name="description" className="form-input" value={formData.description} onChange={handleInputChange} rows="4" />
                     {errors.description && <span className="error-message">{errors.description}</span>}
                   </div>
 
                   <div className="form-group">
                     <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        name="isNew"
-                        checked={formData.isNew}
-                        onChange={handleInputChange}
-                      />
+                      <input type="checkbox" name="isNew" checked={formData.isNew} onChange={handleInputChange} />
                       <span>Marcar como NUEVO</span>
                     </label>
                   </div>
 
                   <div className="form-group">
                     <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        name="isFeatured"
-                        checked={formData.isFeatured}
-                        onChange={handleInputChange}
-                      />
+                      <input type="checkbox" name="isFeatured" checked={formData.isFeatured} onChange={handleInputChange} />
                       <span>Marcar como DESTACADO</span>
                     </label>
                   </div>
@@ -678,32 +540,12 @@ function AdminDashboard() {
               </div>
 
               <div className="modal-actions">
-                <button 
-                  type="button"
-                  onClick={closeModal} 
-                  className="btn-cancel"
-                  disabled={saving}
-                >
-                  Cancelar
-                </button>
-                <button 
-                  type="submit" 
-                  className="btn-save"
-                  disabled={saving}
-                >
-                  {saving ? (
-                    <>
-                      <FontAwesomeIcon icon={faSpinner} spin />
-                      <span>Guardando...</span>
-                    </>
-                  ) : (
-                    editingProduct ? 'Guardar Cambios' : 'Crear Producto'
-                  )}
+                <button type="button" onClick={closeModal} className="btn-cancel" disabled={saving}>Cancelar</button>
+                <button type="submit" className="btn-save" disabled={saving}>
+                  {saving ? <><FontAwesomeIcon icon={faSpinner} spin /><span> Guardando...</span></> : (editingProduct ? 'Guardar Cambios' : 'Crear Producto')}
                 </button>
               </div>
-
             </form>
-
           </div>
         </div>
       )}

@@ -11,14 +11,14 @@ import {
   orderBy
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import { uploadImageToCloudinary } from './image'
-
-const PRODUCTS_COLLECTION = 'products'
+import { uploadImageToCloudinary } from '../services/image'
+// ✅ NUEVO IMPORT
+import { COLLECTIONS } from './firebase'
 
 export const getAllProducts = async () => {
   try {
     const q = query(
-      collection(db, PRODUCTS_COLLECTION),
+      collection(db, COLLECTIONS.PRODUCTS),
       orderBy('createdAt', 'desc')
     )
     const querySnapshot = await getDocs(q)
@@ -33,7 +33,7 @@ export const getAllProducts = async () => {
 
 export const getProductById = async (productId) => {
   try {
-    const docRef = doc(db, PRODUCTS_COLLECTION, productId)
+    const docRef = doc(db, COLLECTIONS.PRODUCTS, productId)
     const docSnap = await getDoc(docRef)
 
     if (!docSnap.exists()) {
@@ -77,7 +77,7 @@ export const createProduct = async (productData) => {
       updatedAt: new Date()
     }
 
-    const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), productWithTimestamp)
+    const docRef = await addDoc(collection(db, COLLECTIONS.PRODUCTS), productWithTimestamp)
 
     return { id: docRef.id, ...productWithTimestamp }
   } catch (error) {
@@ -112,7 +112,7 @@ export const updateProduct = async (productId, productData) => {
       updateData.image = productData.image
     }
 
-    const productRef = doc(db, PRODUCTS_COLLECTION, productId)
+    const productRef = doc(db, COLLECTIONS.PRODUCTS, productId)
     await updateDoc(productRef, updateData)
 
     return { id: productId, ...updateData }
@@ -123,7 +123,7 @@ export const updateProduct = async (productId, productData) => {
 
 export const deleteProduct = async (productId) => {
   try {
-    const productRef = doc(db, PRODUCTS_COLLECTION, productId)
+    const productRef = doc(db, COLLECTIONS.PRODUCTS, productId)
     await deleteDoc(productRef)
     return true
   } catch (error) {
@@ -134,7 +134,7 @@ export const deleteProduct = async (productId) => {
 export const getProductsByCategory = async (category) => {
   try {
     const q = query(
-      collection(db, PRODUCTS_COLLECTION),
+      collection(db, COLLECTIONS.PRODUCTS),
       where('category', '==', category)
     )
     const querySnapshot = await getDocs(q)
@@ -150,7 +150,7 @@ export const getProductsByCategory = async (category) => {
 export const getFeaturedProducts = async () => {
   try {
     const q = query(
-      collection(db, PRODUCTS_COLLECTION),
+      collection(db, COLLECTIONS.PRODUCTS),
       where('isFeatured', '==', true)
     )
     const querySnapshot = await getDocs(q)
@@ -168,7 +168,7 @@ export const getFeaturedProducts = async () => {
 export const getNewProducts = async () => {
   try {
     const q = query(
-      collection(db, PRODUCTS_COLLECTION),
+      collection(db, COLLECTIONS.PRODUCTS),
       where('isNew', '==', true)
     )
     const querySnapshot = await getDocs(q)
