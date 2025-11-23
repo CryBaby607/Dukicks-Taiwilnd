@@ -12,7 +12,8 @@ import {
   faEnvelope,
   faLock,
   faEye,
-  faEyeSlash
+  faEyeSlash,
+  faExclamationTriangle // <--- AGREGADO
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faFacebookF,
@@ -38,5 +39,6 @@ library.add(
   faFacebookF,
   faInstagram,
   faTiktok,
-  faWhatsapp
+  faWhatsapp,
+  faExclamationTriangle // <--- AGREGADO
 )

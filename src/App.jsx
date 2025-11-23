@@ -7,6 +7,7 @@ import './styles/global.css'
 import { CartProvider } from './context/CartContext'
 import { AdminProvider } from './context/AdminContext'
 import AdminRoute from './components/AdminRoute/AdminRoute'
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary' // <--- AGREGADO
 
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
@@ -24,32 +25,34 @@ export default function App() {
   const hideLayout = location.pathname === '/login' || location.pathname.startsWith('/admin')
 
   return (
-    <AdminProvider>
-      <CartProvider>
-        <div>
-          {!hideLayout && <Header />}
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/hombre" element={<Hombre />} />
-              <Route path="/mujer" element={<Mujer />} />
-              <Route path="/gorras" element={<Gorras />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/login" element={<Login />} />
-              <Route 
-                path="/admin" 
-                element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                } 
-              />
-            </Routes>
-          </main>
-          {!hideLayout && <Footer />}
-        </div>
-      </CartProvider>
-    </AdminProvider>
+    <ErrorBoundary> {/* <--- AGREGADO WRAPPER */}
+      <AdminProvider>
+        <CartProvider>
+          <div>
+            {!hideLayout && <Header />}
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/hombre" element={<Hombre />} />
+                <Route path="/mujer" element={<Mujer />} />
+                <Route path="/gorras" element={<Gorras />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/login" element={<Login />} />
+                <Route 
+                  path="/admin" 
+                  element={
+                    <AdminRoute>
+                      <AdminDashboard />
+                    </AdminRoute>
+                  } 
+                />
+              </Routes>
+            </main>
+            {!hideLayout && <Footer />}
+          </div>
+        </CartProvider>
+      </AdminProvider>
+    </ErrorBoundary>
   )
 }
