@@ -23,20 +23,6 @@ function SearchBar() {
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
 
   useEffect(() => {
-    const loadAllProducts = async () => {
-      try {
-        const products = await getAllProducts()
-        setAllProducts(products)
-        setProductsLoaded(true)
-      } catch (error) {
-        console.error('Error al cargar productos:', error)
-        setProductsLoaded(true)
-      }
-    }
-    loadAllProducts()
-  }, [])
-
-  useEffect(() => {
     if (debouncedSearchTerm.trim().length === 0) {
       setSuggestions([])
       setIsOpen(false)
@@ -53,12 +39,23 @@ function SearchBar() {
     setIsOpen(results.length > 0)
   }, [debouncedSearchTerm, allProducts, productsLoaded])
 
-  const handleExpand = useCallback(() => {
+  const handleExpand = useCallback(async () => {
     setIsExpanded(true)
     setTimeout(() => {
       inputRef.current?.focus()
     }, 200)
-  }, [])
+
+    if (!productsLoaded && allProducts.length === 0) {
+      try {
+        const products = await getAllProducts()
+        setAllProducts(products)
+        setProductsLoaded(true)
+      } catch (error) {
+        console.error('Error al cargar productos para búsqueda:', error)
+        setProductsLoaded(true)
+      }
+    }
+  }, [productsLoaded, allProducts.length])
 
   const handleCollapse = useCallback(() => {
     setIsExpanded(false)
@@ -67,15 +64,17 @@ function SearchBar() {
     setIsOpen(false)
   }, [])
 
-  const handleSelectProduct = useCallback((productId) => {
-    navigate(`/product/${productId}`)
-    handleCollapse()
-  }, [navigate, handleCollapse])
+  const handleSelectProduct = useCallback(
+    (productId) => {
+      navigate(`/product/${productId}`)
+      handleCollapse()
+    },
+    [navigate, handleCollapse]
+  )
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
     if (searchTerm.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchTerm)}`)
       handleCollapse()
     }
   }
@@ -105,7 +104,7 @@ function SearchBar() {
   }, [isExpanded, handleCollapse])
 
   return (
-    <div 
+    <div
       ref={searchRef}
       className={`search-bar ${isExpanded ? 'search-bar--expanded' : ''}`}
     >
@@ -121,17 +120,14 @@ function SearchBar() {
       )}
 
       {isExpanded && (
-        <form 
-          className="search-bar__form" 
-          onSubmit={handleSearchSubmit}
-        >
+        <form className="search-bar__form" onSubmit={handleSearchSubmit}>
           <div className="search-bar__input-wrapper">
-            <FontAwesomeIcon 
-              icon={faMagnifyingGlass} 
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
               className="search-bar__icon"
               aria-hidden="true"
             />
-            
+
             <input
               ref={inputRef}
               type="text"
@@ -166,7 +162,7 @@ function SearchBar() {
                       onClick={() => handleSelectProduct(product.id)}
                       aria-label={`Ver ${getProductName(product)}`}
                     >
-                      <img 
+                      <img
                         src={getProductImage(product)}
                         alt={getProductName(product)}
                         className="search-bar__suggestion-image"
