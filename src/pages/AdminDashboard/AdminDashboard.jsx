@@ -21,7 +21,7 @@ import {
 } from '../../services/product'
 import { formatPrice } from '../../utils/formatters'
 import { getProductImage } from '../../utils/imageUtils'
-import { SIZES, PRODUCT_CATEGORIES } from '../../constants/product.constants' 
+import { SIZES, PRODUCT_CATEGORIES } from '../../constants/product' 
 import { validateImageFile, validateRequired } from '../../helpers/validation' 
 import { useErrorHandler } from '../../hooks/useErrorHandler'
 import './AdminDashboard.css'

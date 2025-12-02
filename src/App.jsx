@@ -25,7 +25,7 @@ export default function App() {
   const hideLayout = location.pathname === '/login' || location.pathname.startsWith('/admin')
 
   return (
-    <ErrorBoundary> {/* <--- AGREGADO WRAPPER */}
+    <ErrorBoundary> 
       <AdminProvider>
         <CartProvider>
           <div>
