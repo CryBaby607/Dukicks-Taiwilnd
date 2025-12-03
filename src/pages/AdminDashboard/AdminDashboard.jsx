@@ -239,25 +239,9 @@ function AdminDashboard() {
   }
 
   const validateForm = () => {
-  
-    const newErrors = validateRequired(formData, ['brand', 'model', 'description'])
-
-    if (!formData.price) {
-      newErrors.price = 'El precio es requerido'
-    } else if (parseFloat(formData.price) <= 0) {
-      newErrors.price = 'Ingresa un precio válido (mayor a 0)'
-    }
-
-    if (formData.sizes.length === 0) {
-      newErrors.sizes = 'Selecciona al menos una talla'
-    }
-
-    if (formData.discount !== '') {
-      const discount = parseFloat(formData.discount)
-      if (discount < 0 || discount > 100) {
-        newErrors.discount = 'El descuento debe ser entre 0 y 100'
-      }
-    }
+    const { isValid, errors: dataErrors } = validateProductData(formData)
+    
+    let newErrors = { ...dataErrors }
 
     if (!editingProduct && !formData.imageFile) {
       newErrors.image = 'Debes subir una imagen'
@@ -268,7 +252,8 @@ function AdminDashboard() {
     }
 
     setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    
+    return isValid && !newErrors.image
   }
 
   const handleSubmit = async (e) => {

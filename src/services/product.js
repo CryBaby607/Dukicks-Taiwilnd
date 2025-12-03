@@ -26,7 +26,8 @@ export const getAllProducts = async () => {
       ...doc.data()
     }))
   } catch (error) {
-    throw error
+    console.error('[getAllProducts] Error:', error)
+    throw new Error(`Error al obtener productos: ${error.message}`)
   }
 }
 
