@@ -9,7 +9,7 @@ export const generateWhatsAppMessage = (cartItems, total) => {
   
   cartItems.forEach((item, index) => {
     const subtotal = item.price * item.quantity
-    
+
     message += `${index + 1}. *${item.name}*\n`
     message += `   Talla: ${item.size || 'N/A'}\n`
     message += `   Cantidad: ${item.quantity}\n`

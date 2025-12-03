@@ -17,6 +17,7 @@ export const calculateDiscountedPrice = (price, discount = 0) => {
 
 export const formatPrice = (price) => {
   if (typeof price !== 'number' || price < 0) {
+    console.warn('formatPrice recibió valor inválido:', price)
     return '$0'
   }
 
