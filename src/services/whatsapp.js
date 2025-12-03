@@ -1,4 +1,3 @@
-import { calculateItemSubtotal } from '../helpers/calculations'
 import { formatPrice } from '../utils/formatters'
 
 export const generateWhatsAppMessage = (cartItems, total) => {
@@ -9,11 +8,13 @@ export const generateWhatsAppMessage = (cartItems, total) => {
   let message = '*🛍️ PEDIDO DUKICKS*\n\n'
   
   cartItems.forEach((item, index) => {
+    const subtotal = item.price * item.quantity
+    
     message += `${index + 1}. *${item.name}*\n`
     message += `   Talla: ${item.size || 'N/A'}\n`
     message += `   Cantidad: ${item.quantity}\n`
     message += `   Precio: ${formatPrice(item.price)}\n`
-    message += `   Subtotal: ${formatPrice(calculateItemSubtotal(item.price, item.quantity))}\n\n`
+    message += `   Subtotal: ${formatPrice(subtotal)}\n\n`
   })
 
   message += `━━━━━━━━━━━━━━━━\n`

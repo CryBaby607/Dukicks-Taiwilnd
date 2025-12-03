@@ -1,3 +1,5 @@
+import { PRODUCT_CATEGORIES } from '../constants/product'
+
 export const MAX_FILE_SIZE_MB = 5;
 export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
@@ -12,19 +14,36 @@ export const validateImageFile = (file) => {
   return null;
 };
 
-export const requiredFieldMessages = {
-  brand: 'La marca es requerida',
-  model: 'El modelo es requerido',
-  description: 'La descripción es requerida',
-  price: 'El precio es requerido'
-}
-
-export const validateRequired = (data, fields) => {
+export const validateProductData = (data) => {
   const errors = {}
-  fields.forEach(field => {
-    if (!data[field] || (typeof data[field] === 'string' && !data[field].trim())) {
-      errors[field] = requiredFieldMessages[field] || `El campo ${field} es requerido`
+
+  const textFields = ['brand', 'model', 'description']
+  textFields.forEach(field => {
+    if (!data[field] || !data[field].toString().trim()) {
+      errors[field] = `El campo ${field} es obligatorio`
     }
   })
-  return errors
+
+  if (!data.price || isNaN(data.price) || Number(data.price) <= 0) {
+    errors.price = 'El precio debe ser un número mayor a 0'
+  }
+
+  if (data.discount !== '' && (isNaN(data.discount) || Number(data.discount) < 0 || Number(data.discount) > 100)) {
+    errors.discount = 'El descuento debe estar entre 0 y 100'
+  }
+
+  if (!Object.values(PRODUCT_CATEGORIES).includes(data.category)) {
+    errors.category = 'Categoría inválida'
+  }
+
+  if (data.category !== PRODUCT_CATEGORIES.GORRAS) {
+    if (!Array.isArray(data.sizes) || data.sizes.length === 0) {
+      errors.sizes = 'Debes seleccionar al menos una talla'
+    }
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  }
 }
