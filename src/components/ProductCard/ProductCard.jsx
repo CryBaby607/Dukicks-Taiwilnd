@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { formatPrice, getFinalPrice } from '../../utils/formatters'
 import { getProductImage, getProductName } from '../../utils/imageUtils'
-import './ProductCard.css'
 
 function ProductCard({ 
   product, 
@@ -12,64 +11,106 @@ function ProductCard({
   const productName = getProductName(product)
   const productImage = getProductImage(product)
 
+  // Determinar clases según la variante
+  const isFeatured = variant === 'featured'
+  const isCompact = variant === 'compact'
+
   return (
-    <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
-      <article className={`product-card product-card--${variant}`}>
+    <Link to={`/product/${product.id}`} className="block h-full group no-underline">
+      <article className={`
+        relative bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-300
+        hover:-translate-y-2 hover:shadow-xl flex flex-col h-full
+        ${isCompact ? 'flex-row' : ''}
+      `}>
+        
+        {/* Badges (Descuento / Nuevo) */}
         {(product.discount > 0 || product.isNew) && (
-          <div className="product-card__badges">
+          <div className={`
+            absolute z-10 flex flex-col gap-1
+            ${isCompact ? 'top-2 right-2 flex-row' : 'top-4 right-4'}
+          `}>
             {product.discount > 0 && (
-              <span className="badge badge--discount">-{product.discount}%</span>
+              <span className={`
+                inline-flex items-center justify-center rounded-full font-bold uppercase tracking-wide bg-error text-white shadow-sm
+                ${isCompact ? 'text-[9px] px-1.5 py-0.5' : 'text-xs px-3 py-1'}
+              `}>
+                -{product.discount}%
+              </span>
             )}
             {product.isNew && (
-              <span className="badge badge--new">NUEVO</span>
+              <span className={`
+                inline-flex items-center justify-center rounded-full font-bold uppercase tracking-wide bg-accent text-white shadow-sm
+                ${isCompact ? 'text-[9px] px-1.5 py-0.5' : 'text-xs px-3 py-1'}
+              `}>
+                NUEVO
+              </span>
             )}
           </div>
         )}
 
-        <div className="product-card__image-wrapper">
+        {/* Contenedor de Imagen */}
+        <div className={`
+          relative overflow-hidden bg-light shrink-0
+          ${isFeatured ? 'h-[320px]' : ''}
+          ${isCompact ? 'w-[120px] h-[120px]' : 'w-full h-[280px]'}
+        `}>
           <img
             src={productImage}
             alt={productName}
-            className="product-card__image"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
           />
         </div>
 
-        <div className="product-card__info">
+        {/* Información del Producto */}
+        <div className={`
+          flex flex-col flex-1
+          ${isFeatured ? 'p-8 gap-4' : 'p-6 gap-3'}
+          ${isCompact ? 'p-4' : ''}
+        `}>
           {showCategory && product.category && (
-            <span className="product-card__category">{product.category}</span>
+            <span className="text-xs font-semibold text-gray uppercase tracking-wide">
+              {product.category}
+            </span>
           )}
 
-          <div className="product-card__header">
-            <h3 className="product-card__name">
+          <div className="flex justify-between items-start gap-2">
+            <h3 className={`
+              font-title font-bold text-primary m-0 leading-tight flex flex-col gap-1 flex-1
+              ${isFeatured ? 'text-xl' : 'text-lg'}
+              ${isCompact ? 'text-base' : ''}
+            `}>
               {product.brand && (
-                <span className="product-card__brand">{product.brand}</span>
+                <span className="text-primary">{product.brand}</span>
               )}
               {product.model && (
-                <span className="product-card__model">{product.model}</span>
+                <span className="font-semibold text-dark-gray text-base">
+                  {product.model}
+                </span>
               )}
               {!product.brand && !product.model && product.name}
             </h3>
           </div>
 
-          {variant === 'featured' && product.description && (
-            <p className="product-card__description">
-              {product.description.substring(0, 80)}...
+          {/* Descripción solo en Featured */}
+          {isFeatured && product.description && (
+            <p className="text-sm text-gray leading-relaxed m-0 line-clamp-2">
+              {product.description}
             </p>
           )}
 
-          <div className="product-card__prices">
+          <div className="flex items-center gap-3 flex-wrap mt-auto">
             {product.discount > 0 ? (
               <>
-                <span className="product-card__price product-card__price--original">
+                <span className="text-base text-gray line-through font-normal">
                   {formatPrice(product.price)}
                 </span>
-                <span className="product-card__price product-card__price--final">
+                <span className={`font-bold text-accent ${isCompact ? 'text-base' : 'text-xl'}`}>
                   {formatPrice(finalPrice)}
                 </span>
               </>
             ) : (
-              <span className="product-card__price product-card__price--final">
+              <span className={`font-bold text-accent ${isCompact ? 'text-base' : 'text-xl'}`}>
                 {formatPrice(product.price)}
               </span>
             )}

@@ -6,7 +6,6 @@ import { getAllProducts } from '../../services/product'
 import { searchProductsWithRelevance } from '../../utils/search'
 import { useDebounce } from '../../hooks/useDebounce'
 import { getProductImage, getProductName } from '../../utils/imageUtils'
-import './SearchBar.css'
 
 function SearchBar() {
   const navigate = useNavigate()
@@ -106,73 +105,66 @@ function SearchBar() {
   return (
     <div
       ref={searchRef}
-      className={`search-bar ${isExpanded ? 'search-bar--expanded' : ''}`}
+      className={`relative flex items-center justify-center transition-all duration-300 ${
+        isExpanded ? 'fixed top-0 left-0 right-0 z-[9999] bg-primary p-4 shadow-lg animate-fade-in' : ''
+      }`}
     >
       {!isExpanded && (
         <button
-          className="search-bar__toggle"
+          className="flex items-center justify-center w-10 h-10 bg-transparent border-none text-white text-lg cursor-pointer rounded-md transition-all duration-200 hover:text-accent hover:bg-white/10"
           onClick={handleExpand}
           aria-label="Abrir búsqueda"
-          aria-expanded={isExpanded}
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
       )}
 
       {isExpanded && (
-        <form className="search-bar__form" onSubmit={handleSearchSubmit}>
-          <div className="search-bar__input-wrapper">
+        <form className="w-full max-w-[600px] mx-auto relative" onSubmit={handleSearchSubmit}>
+          <div className="relative flex items-center bg-white rounded-lg px-4 transition-all duration-300 shadow-md focus-within:border-accent focus-within:ring-4 focus-within:ring-accent/10">
             <FontAwesomeIcon
               icon={faMagnifyingGlass}
-              className="search-bar__icon"
-              aria-hidden="true"
+              className="text-gray-500 text-base mr-2 pointer-events-none shrink-0"
             />
 
             <input
               ref={inputRef}
               type="text"
-              className="search-bar__input"
+              className="flex-1 bg-transparent border-none py-3 text-base text-primary font-text outline-none min-w-0 placeholder:text-gray-400"
               placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label="Buscar productos"
-              aria-autocomplete="list"
-              aria-controls="search-suggestions"
-              aria-expanded={isOpen}
             />
 
             <button
               type="button"
               onClick={handleCollapse}
-              className="search-bar__close"
-              aria-label="Cerrar búsqueda"
+              className="bg-transparent border-none text-gray-500 text-base cursor-pointer p-2 ml-1 rounded-md transition-all hover:text-accent hover:bg-accent/10 flex items-center justify-center shrink-0 w-8 h-8"
             >
               <FontAwesomeIcon icon={faTimes} />
             </button>
           </div>
 
           {isOpen && suggestions.length > 0 && (
-            <div className="search-bar__suggestions" id="search-suggestions">
-              <ul className="search-bar__list">
+            <div className="absolute top-[calc(100%+12px)] left-0 right-0 bg-white border border-gray-100 rounded-lg shadow-xl z-50 overflow-hidden max-h-[500px] overflow-y-auto animate-slide-down">
+              <ul className="list-none p-0 m-0 flex flex-col">
                 {suggestions.map((product) => (
                   <li key={product.id}>
                     <button
                       type="button"
-                      className="search-bar__suggestion-item"
+                      className="w-full flex items-center gap-4 p-4 bg-transparent border-none cursor-pointer transition-all text-left border-b border-gray-100 last:border-b-0 hover:bg-light pl-6"
                       onClick={() => handleSelectProduct(product.id)}
-                      aria-label={`Ver ${getProductName(product)}`}
                     >
                       <img
                         src={getProductImage(product)}
                         alt={getProductName(product)}
-                        className="search-bar__suggestion-image"
-                        loading="lazy"
+                        className="w-[50px] h-[50px] object-cover rounded-md shrink-0 bg-gray-100"
                       />
-                      <div className="search-bar__suggestion-content">
-                        <span className="search-bar__suggestion-name">
+                      <div className="flex-1 flex flex-col gap-1 min-w-0">
+                        <span className="text-sm font-semibold text-primary whitespace-nowrap overflow-hidden text-ellipsis">
                           {getProductName(product)}
                         </span>
-                        <span className="search-bar__suggestion-category">
+                        <span className="text-xs text-gray-500 uppercase tracking-wide">
                           {product.category}
                         </span>
                       </div>
@@ -184,8 +176,8 @@ function SearchBar() {
           )}
 
           {isOpen && searchTerm && suggestions.length === 0 && productsLoaded && (
-            <div className="search-bar__no-results">
-              <p>No encontramos productos para "{searchTerm}"</p>
+            <div className="absolute top-[calc(100%+12px)] left-0 right-0 bg-white border border-gray-100 rounded-lg p-6 text-center shadow-xl z-50 animate-slide-down">
+              <p className="m-0 text-sm text-gray-500">No encontramos productos para "{searchTerm}"</p>
             </div>
           )}
         </form>
