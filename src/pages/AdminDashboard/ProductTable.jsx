@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash, faBoxOpen, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { formatPrice } from '../../../utils/formatters'
-import { getProductImage } from '../../../utils/imageUtils'
+import { formatPrice } from '../../utils/formatters'
+import { getProductImage } from '../../utils/imageUtils'
 
 function ProductTable({ products, loading, onEdit, onDelete, onAdd }) {
   return (

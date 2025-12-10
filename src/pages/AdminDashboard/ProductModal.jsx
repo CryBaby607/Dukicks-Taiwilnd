@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faSpinner, faImage, faX } from '@fortawesome/free-solid-svg-icons'
-import { SIZES, PRODUCT_CATEGORIES } from '../../../constants/product'
+import { SIZES, PRODUCT_CATEGORIES } from '../../constants/product'
 
 function ProductModal({ 
   isOpen, 
