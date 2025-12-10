@@ -11,7 +11,7 @@ export default {
         secondary: '#2563EB',
         accent: '#3a86ff',
         light: '#f8f9fa',
-        gray: '#6c757d',
+        'custom-gray': '#6c757d',
         'dark-gray': '#343a40',
         success: '#10b981',
         warning: '#f59e0b',
