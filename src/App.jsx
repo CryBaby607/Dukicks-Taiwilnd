@@ -1,11 +1,10 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import './config/fontawesome'
-import './styles/variables.css'
 
 import { CartProvider } from './context/CartContext'
 import { AdminProvider } from './context/AdminContext'
 import AdminRoute from './components/AdminRoute/AdminRoute'
-import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary' // <--- AGREGADO
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
@@ -26,9 +25,9 @@ export default function App() {
     <ErrorBoundary> 
       <AdminProvider>
         <CartProvider>
-          <div>
+          <div className="min-h-screen flex flex-col">
             {!hideLayout && <Header />}
-            <main>
+            <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/hombre" element={<Hombre />} />

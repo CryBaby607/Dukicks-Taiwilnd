@@ -19,68 +19,26 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#f8f9fa',
-          padding: '2rem'
-        }}>
-          <div style={{
-            textAlign: 'center',
-            maxWidth: '500px',
-            backgroundColor: 'white',
-            padding: '3rem',
-            borderRadius: '1rem',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-          }}>
+        <div className="min-h-screen flex items-center justify-center bg-light p-8">
+          <div className="text-center max-w-md bg-white p-12 rounded-2xl shadow-xl">
             <FontAwesomeIcon 
-               icon={faExclamationTriangle} 
-               style={{
-                fontSize: '3rem',
-                color: '#ef4444',
-                marginBottom: '1rem'
-              }}
+              icon={faExclamationTriangle} 
+              className="text-5xl text-error mb-4"
             />
-            <h1 style={{
-              margin: '1rem 0',
-              color: '#111111',
-              fontSize: '1.875rem'
-            }}>
+            <h1 className="text-3xl font-title font-bold text-primary mb-4">
               Algo salió mal
             </h1>
-            <p style={{
-              color: '#6c757d',
-              marginBottom: '2rem',
-              lineHeight: '1.6'
-            }}>
+            <p className="text-base text-gray leading-relaxed mb-8">
               Disculpa, ocurrió un error inesperado. Por favor, intenta recargar la página.
             </p>
             <button
               onClick={() => window.location.reload()}
-              style={{
-                padding: '0.75rem 2rem',
-                backgroundColor: '#3a86ff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#2563EB'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = '#3a86ff'}
+              className="px-8 py-3 bg-accent text-white font-bold rounded-lg text-base cursor-pointer transition-all duration-200 hover:bg-secondary hover:shadow-lg active:scale-95"
             >
               Recargar Página
             </button>
             
-            <p style={{
-              marginTop: '1.5rem',
-              fontSize: '0.875rem',
-              color: '#9ca3af'
-            }}>
+            <p className="mt-6 text-sm text-gray-400">
               Si el problema persiste, contacta con soporte.
             </p>
           </div>

@@ -7,12 +7,13 @@
 @tailwind utilities;
 
 @layer base {
+  /* Configuración global del HTML y Body */
   html {
     @apply scroll-smooth;
   }
 
   body {
-    @apply font-text text-base font-normal leading-relaxed text-dark-gray bg-white overflow-x-hidden;
+    @apply font-text text-base font-normal leading-relaxed text-dark-gray bg-white overflow-x-hidden antialiased;
   }
 
   #root {
@@ -29,7 +30,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray rounded-full hover:bg-dark-gray;
+    @apply bg-gray rounded-full transition-colors hover:bg-dark-gray;
   }
 
   /* Selection */
@@ -37,49 +38,50 @@
     @apply bg-secondary text-white;
   }
 
-  /* Typography base */
+  /* Typography base - Responsive automático */
   h1 {
-    @apply font-title text-5xl font-bold leading-tight my-md text-primary;
+    @apply font-title text-3xl md:text-4xl lg:text-5xl font-bold leading-tight my-4 text-primary;
   }
 
   h2 {
-    @apply font-title text-4xl font-bold leading-tight my-md text-primary;
+    @apply font-title text-2xl md:text-3xl lg:text-4xl font-bold leading-tight my-4 text-primary;
   }
 
   h3 {
-    @apply font-title text-3xl font-semibold leading-snug my-md text-primary;
+    @apply font-title text-xl md:text-2xl lg:text-3xl font-semibold leading-snug my-4 text-primary;
   }
 
   h4 {
-    @apply font-title text-2xl font-semibold leading-normal my-sm text-primary;
+    @apply font-title text-lg md:text-xl lg:text-2xl font-semibold leading-normal my-2 text-primary;
   }
 
   h5 {
-    @apply font-title text-xl font-semibold leading-normal my-sm text-primary;
+    @apply font-title text-base md:text-lg lg:text-xl font-semibold leading-normal my-2 text-primary;
   }
 
   h6 {
-    @apply font-title text-lg font-semibold leading-relaxed my-sm text-primary;
+    @apply font-title text-sm md:text-base lg:text-lg font-semibold leading-relaxed my-2 text-primary;
   }
 
   p {
-    @apply font-text text-base font-normal leading-relaxed my-md text-dark-gray;
+    @apply font-text text-base font-normal leading-relaxed my-4 text-dark-gray;
   }
 
   a {
-    @apply font-text text-secondary no-underline transition-colors duration-base hover:text-accent hover:underline;
+    @apply font-text text-secondary no-underline transition-colors duration-200 hover:text-accent hover:underline;
   }
 
+  /* Form elements */
   button {
-    @apply cursor-pointer border-none font-semibold rounded-md transition-all duration-base text-base px-lg py-sm;
+    @apply cursor-pointer border-none font-semibold rounded-md transition-all duration-200 text-base px-6 py-2;
     @apply active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed;
   }
 
   input,
   textarea,
   select {
-    @apply font-text text-base border border-gray rounded-md px-md py-sm transition-all duration-base;
-    @apply focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/10;
+    @apply font-text text-base border border-gray-300 rounded-md px-4 py-2 transition-all duration-200;
+    @apply focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/10;
   }
 
   textarea {
@@ -92,63 +94,27 @@
 }
 
 @layer components {
+  /* Container customizado */
   .container {
-    @apply max-w-[1200px] mx-auto px-lg;
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      @apply px-md;
-    }
+    @apply max-w-[1200px] mx-auto px-6 md:px-4;
   }
 
   /* Button variants */
   .btn {
-    @apply inline-flex items-center justify-center font-text text-base font-semibold no-underline px-xl py-md rounded-md transition-all duration-base cursor-pointer border-2 border-transparent;
+    @apply inline-flex items-center justify-center font-text text-base font-semibold no-underline px-8 py-4 rounded-md transition-all duration-200 cursor-pointer border-2 border-transparent;
   }
 
   .btn-primary {
-    @apply bg-accent text-white border-accent hover:bg-secondary hover:border-secondary hover:shadow-lg hover:no-underline;
+    @apply bg-accent text-white border-accent hover:bg-secondary hover:border-secondary hover:shadow-lg hover:no-underline active:scale-95;
   }
 
   .btn-secondary {
-    @apply bg-transparent text-primary border-primary hover:bg-primary hover:text-white hover:no-underline;
-  }
-
-  .btn-whatsapp {
-    @apply flex items-center gap-2;
+    @apply bg-transparent text-primary border-primary hover:bg-primary hover:text-white hover:no-underline active:scale-95;
   }
 
   /* Utility classes */
   .sr-only {
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
     clip: rect(0, 0, 0, 0);
-  }
-}
-
-@layer utilities {
-  /* Responsive typography */
-  @media (max-width: 1024px) {
-    h1 {
-      @apply text-[2.25rem];
-    }
-    h2 {
-      @apply text-[1.875rem];
-    }
-    h3 {
-      @apply text-[1.5rem];
-    }
-  }
-
-  @media (max-width: 768px) {
-    h1 {
-      @apply text-[1.875rem];
-    }
-    h2 {
-      @apply text-[1.5rem];
-    }
-    h3 {
-      @apply text-[1.25rem];
-    }
   }
 }

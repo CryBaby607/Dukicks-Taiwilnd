@@ -6,16 +6,8 @@ function AdminRoute({ children }) {
 
   if (loading) {
     return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#f8f9fa'
-        }}
-      >
-        <p style={{ fontSize: '18px', color: '#6c757d' }}>Verificando acceso...</p>
+      <div className="min-h-screen flex items-center justify-center bg-light">
+        <p className="text-lg text-gray">Verificando acceso...</p>
       </div>
     )
   }
