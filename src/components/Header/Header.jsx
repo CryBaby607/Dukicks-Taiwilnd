@@ -21,7 +21,7 @@ function Header() {
     <header className="bg-primary border-b border-dark-gray sticky top-0 z-sticky shadow-md">
       <div className="container">
         <div className="flex items-center justify-between py-md">
-          {/* Logo */}
+
           <div className="flex-shrink-0">
             <Link
               to="/"
@@ -35,7 +35,6 @@ function Header() {
             </Link>
           </div>
 
-          {/* Navigation */}
           <nav
             className={`
               md:flex md:items-center md:gap-xl md:flex-1 md:justify-center
@@ -123,12 +122,10 @@ function Header() {
             </ul>
           </nav>
 
-          {/* Search Bar */}
           <SearchBar />
 
-          {/* Header Controls */}
           <div className="flex items-center gap-lg flex-shrink-0">
-            {/* Cart Button */}
+            
             <Link
               to="/cart"
               className="
@@ -152,7 +149,6 @@ function Header() {
               )}
             </Link>
 
-            {/* Hamburger Menu */}
             <button
               className={`
                 md:hidden flex flex-col gap-[5px] bg-transparent border-none

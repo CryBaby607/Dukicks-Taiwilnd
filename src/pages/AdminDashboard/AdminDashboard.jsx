@@ -13,7 +13,7 @@ import { validateImageFile, validateProductData } from '../../helpers/validation
 import { useErrorHandler } from '../../hooks/useErrorHandler'
 
 // Componentes
-import AdminHeader from './AdminHeader' // Asegúrate de que la ruta sea correcta si usaste carpetas
+import AdminHeader from './AdminHeader'
 import StatsCards from './StatsCards'
 import ProductTable from './ProductTable'
 import ProductModal from './ProductModal'
@@ -57,11 +57,7 @@ function AdminDashboard() {
       setLoading(false)
     }
   }
-
-  // ... (El resto de funciones: openAddModal, openEditModal, closeModal, etc. SE MANTIENEN IGUAL)
-  // ... Para ahorrar espacio aquí, asumo que mantienes las funciones lógicas intactas.
-  // ... Solo cambiaré el RETURN final.
-
+  
   const openAddModal = () => {
     setEditingProduct(null)
     resetForm()
