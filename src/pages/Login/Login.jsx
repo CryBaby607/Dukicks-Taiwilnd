@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faLock, faSpinner, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useAdmin } from '../../context/AdminContext'
-import './Login.css'
 
 function Login() {
   const navigate = useNavigate()
@@ -57,37 +56,45 @@ function Login() {
   }
 
   return (
-    <div className="login-page">
-      <div className="login-background">
-        <div className="background-pattern"></div>
+    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-primary to-secondary p-6 overflow-hidden">
+      {/* Patrón de fondo animado */}
+      <div className="absolute inset-0 opacity-10 z-0 pointer-events-none">
+        <div className="absolute w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(255,255,255,0.5)_1px,transparent_1px)] bg-[length:50px_50px] animate-move-pattern"></div>
       </div>
 
-      <div className="login-container">
-        <div className="login-card">
+      <div className="relative z-10 w-full max-w-[420px]">
+        <div className="bg-white rounded-xl shadow-2xl p-8 md:p-12 animate-slide-in">
 
-          <div className="login-header">
-            <div className="login-logo">
-              <span className="logo-du">DU</span>
-              <span className="logo-kicks">KICKS</span>
+          <div className="text-center mb-8">
+            <div className="font-title text-4xl font-bold tracking-tight flex justify-center gap-1 select-none">
+              <span className="text-primary">DU</span>
+              <span className="text-accent">KICKS</span>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="login-form" noValidate>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
             {error && (
-              <div className="alert alert-error">
+              <div className="p-4 rounded-md mb-2 text-sm font-semibold bg-red-50 text-error border border-error/20 animate-slide-in">
                 <span>{error}</span>
               </div>
             )}
 
-            <div className="form-group">
-              <label htmlFor="email" className="form-label">Correo Electrónico</label>
-              <div className={`input-wrapper ${touched.email && !isEmailValid && email ? 'error' : ''}`}>
-                <FontAwesomeIcon icon={faEnvelope} className="input-icon" />
+            {/* Campo Email */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email" className="text-sm font-semibold text-primary uppercase tracking-wide">
+                Correo Electrónico
+              </label>
+              <div className={`
+                relative flex items-center bg-light border-2 rounded-md px-4 transition-all duration-200
+                focus-within:bg-white focus-within:border-accent focus-within:shadow-md
+                ${touched.email && !isEmailValid && email ? 'border-error bg-red-50' : 'border-transparent'}
+              `}>
+                <FontAwesomeIcon icon={faEnvelope} className="text-gray text-base mr-3 shrink-0" />
                 <input
                   id="email"
                   type="email"
                   placeholder="admin@dukicks.com"
-                  className="form-input"
+                  className="flex-1 bg-transparent border-none outline-none py-3 text-base text-primary font-text placeholder:text-gray/70 disabled:cursor-not-allowed disabled:text-gray"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onBlur={() => handleBlur('email')}
@@ -95,19 +102,28 @@ function Login() {
                 />
               </div>
               {touched.email && !isEmailValid && email && (
-                <span className="error-message">Por favor ingresa un correo válido</span>
+                <span className="text-xs text-error font-semibold animate-slide-in">
+                  Por favor ingresa un correo válido
+                </span>
               )}
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password" className="form-label">Contraseña</label>
-              <div className={`input-wrapper ${touched.password && !isPasswordValid && password ? 'error' : ''}`}>
-                <FontAwesomeIcon icon={faLock} className="input-icon" />
+            {/* Campo Contraseña */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password" className="text-sm font-semibold text-primary uppercase tracking-wide">
+                Contraseña
+              </label>
+              <div className={`
+                relative flex items-center bg-light border-2 rounded-md px-4 transition-all duration-200
+                focus-within:bg-white focus-within:border-accent focus-within:shadow-md
+                ${touched.password && !isPasswordValid && password ? 'border-error bg-red-50' : 'border-transparent'}
+              `}>
+                <FontAwesomeIcon icon={faLock} className="text-gray text-base mr-3 shrink-0" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="form-input"
+                  className="flex-1 bg-transparent border-none outline-none py-3 text-base text-primary font-text placeholder:text-gray/70 disabled:cursor-not-allowed disabled:text-gray"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onBlur={() => handleBlur('password')}
@@ -115,7 +131,7 @@ function Login() {
                 />
                 <button
                   type="button"
-                  className="toggle-password"
+                  className="bg-transparent border-none text-gray cursor-pointer p-2 ml-1 rounded-md transition-all flex items-center justify-center text-base hover:text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   disabled={loading}
@@ -124,18 +140,24 @@ function Login() {
                 </button>
               </div>
               {touched.password && !isPasswordValid && password && (
-                <span className="error-message">La contraseña debe tener mínimo 6 caracteres</span>
+                <span className="text-xs text-error font-semibold animate-slide-in">
+                  La contraseña debe tener mínimo 6 caracteres
+                </span>
               )}
             </div>
 
             <button
               type="submit"
-              className="btn-login"
+              className="
+                w-full py-4 px-6 mt-2 bg-gradient-to-br from-accent to-secondary text-white border-none rounded-md
+                text-base font-bold uppercase tracking-wide cursor-pointer transition-all flex items-center justify-center gap-2
+                shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none
+              "
               disabled={!isFormValid || loading}
             >
               {loading ? (
                 <>
-                  <FontAwesomeIcon icon={faSpinner} className="spinner" />
+                  <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
                   <span>Iniciando sesión...</span>
                 </>
               ) : (

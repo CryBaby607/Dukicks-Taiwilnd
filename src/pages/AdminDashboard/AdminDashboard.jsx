@@ -1,34 +1,23 @@
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { 
-  faPlus, 
-  faEdit, 
-  faTrash, 
-  faSignOutAlt, 
-  faTimes, 
-  faBoxOpen, 
-  faSpinner, 
-  faImage, 
-  faX 
-} from '@fortawesome/free-solid-svg-icons'
-import { useAdmin } from '../../context/AdminContext'
-import { useNavigate } from 'react-router-dom'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { 
   getAllProducts, 
   createProduct, 
   updateProduct, 
   deleteProduct 
 } from '../../services/product'
-import { formatPrice } from '../../utils/formatters'
 import { getProductImage } from '../../utils/imageUtils'
-import { SIZES, PRODUCT_CATEGORIES } from '../../constants/product' 
+import { PRODUCT_CATEGORIES } from '../../constants/product' 
 import { validateImageFile, validateProductData } from '../../helpers/validation' 
 import { useErrorHandler } from '../../hooks/useErrorHandler'
-import './AdminDashboard.css'
+
+import AdminHeader from './AdminHeader'
+import StatsCards from './StatsCards'
+import ProductTable from './ProductTable'
+import ProductModal from './ProductModal'
 
 function AdminDashboard() {
-  const { adminUser, logout } = useAdmin()
-  const navigate = useNavigate()
   const { error: globalError, handleError, clearError } = useErrorHandler()
   
   const [products, setProducts] = useState([])
@@ -37,7 +26,6 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [errors, setErrors] = useState({})
-  const [showUserMenu, setShowUserMenu] = useState(false)
   const [imagePreview, setImagePreview] = useState(null)
   
   const [formData, setFormData] = useState({
@@ -57,17 +45,6 @@ function AdminDashboard() {
     loadProducts()
   }, [])
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (showUserMenu && !event.target.closest('.user-menu-container')) {
-        setShowUserMenu(false)
-      }
-    }
-
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [showUserMenu])
-
   const loadProducts = async () => {
     try {
       setLoading(true)
@@ -80,33 +57,9 @@ function AdminDashboard() {
     }
   }
 
-  const handleLogout = () => {
-    if (window.confirm('¿Estás seguro de cerrar sesión?')) {
-      logout()
-      navigate('/login', { replace: true })
-    }
-  }
-
-  const toggleUserMenu = () => {
-    setShowUserMenu(!showUserMenu)
-  }
-
   const openAddModal = () => {
     setEditingProduct(null)
-    setFormData({
-      brand: '',
-      model: '',
-      category: PRODUCT_CATEGORIES.HOMBRE,
-      price: '',
-      discount: '0',
-      description: '',
-      imageFile: null,
-      isNew: false,
-      isFeatured: false,
-      sizes: []
-    })
-    setImagePreview(null)
-    setErrors({})
+    resetForm()
     setIsModalOpen(true)
   }
 
@@ -132,6 +85,10 @@ function AdminDashboard() {
   const closeModal = () => {
     setIsModalOpen(false)
     setEditingProduct(null)
+    resetForm()
+  }
+
+  const resetForm = () => {
     setFormData({
       brand: '',
       model: '',
@@ -169,96 +126,62 @@ function AdminDashboard() {
     })
 
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }))
+      setErrors(prev => ({ ...prev, [name]: '' }))
     }
   }
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0]
-    
     if (!file) return
 
     const validationError = validateImageFile(file)
     if (validationError) {
-      setErrors(prev => ({
-        ...prev,
-        image: validationError
-      }))
+      setErrors(prev => ({ ...prev, image: validationError }))
       return
     }
 
     const reader = new FileReader()
     reader.onload = (event) => {
       setImagePreview(event.target.result)
-      setFormData(prev => ({
-        ...prev,
-        imageFile: file
-      }))
-      setErrors(prev => ({
-        ...prev,
-        image: ''
-      }))
+      setFormData(prev => ({ ...prev, imageFile: file }))
+      setErrors(prev => ({ ...prev, image: '' }))
     }
     reader.readAsDataURL(file)
   }
 
   const removeImage = () => {
     setImagePreview(null)
-    setFormData(prev => ({
-      ...prev,
-      imageFile: null
-    }))
+    setFormData(prev => ({ ...prev, imageFile: null }))
   }
 
   const handleSizeToggle = (size) => {
     setFormData(prev => {
       const isSelected = prev.sizes.includes(size)
-      
-      if (isSelected) {
-        return {
-          ...prev,
-          sizes: prev.sizes.filter(s => s !== size)
-        }
-      } else {
-        return {
-          ...prev,
-          sizes: [...prev.sizes, size]
-        }
+      return {
+        ...prev,
+        sizes: isSelected ? prev.sizes.filter(s => s !== size) : [...prev.sizes, size]
       }
     })
-
-    if (errors.sizes) {
-      setErrors(prev => ({
-        ...prev,
-        sizes: ''
-      }))
-    }
+    if (errors.sizes) setErrors(prev => ({ ...prev, sizes: '' }))
   }
 
   const validateForm = () => {
     const { isValid, errors: dataErrors } = validateProductData(formData)
-    
     let newErrors = { ...dataErrors }
 
     if (!editingProduct && !formData.imageFile) {
       newErrors.image = 'Debes subir una imagen'
     }
-
     if (editingProduct && !formData.imageFile && !imagePreview) {
       newErrors.image = 'Debes mantener o cargar una imagen'
     }
 
     setErrors(newErrors)
-    
     return isValid && !newErrors.image
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (!validateForm()) return
 
     setSaving(true)
@@ -312,411 +235,53 @@ function AdminDashboard() {
     }
   }
 
-  const availableSizes = SIZES[formData.category] || []
-
   return (
-    <div className="admin-dashboard">
+    <div className="min-h-screen flex flex-col bg-light">
+      
+      {/* Notificación de Error Global */}
       {globalError && (
-        <div style={{
-          backgroundColor: '#fee2e2', 
-          color: '#dc2626', 
-          padding: '1rem', 
-          textAlign: 'center', 
-          position: 'fixed', 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          zIndex: 2000,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
+        <div className="fixed top-0 left-0 right-0 bg-red-100 text-error p-4 text-center z-[2000] flex justify-center items-center shadow-md">
           <span>{globalError}</span>
-          <button 
-            onClick={clearError} 
-            style={{
-              marginLeft: '1rem', 
-              background:'none', 
-              border:'none', 
-              cursor:'pointer', 
-              fontSize: '1.2rem',
-              color: '#dc2626'
-            }}
-          >
+          <button onClick={clearError} className="ml-4 bg-transparent border-none cursor-pointer text-lg text-error">
             <FontAwesomeIcon icon={faTimes} />
           </button>
         </div>
       )}
 
-      <header className="admin-header">
-        <div className="container">
-          <div className="admin-header-content">
-            <div className="admin-title-section">
-              <h1 className="admin-title">Panel de Administración</h1>
-            </div>
-            <div className="admin-user-info">
-              <div className="user-menu-container">
-                <div 
-                  className="user-avatar" 
-                  onClick={toggleUserMenu}
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Menú de usuario"
-                >
-                  {adminUser?.email?.charAt(0).toUpperCase() || 'A'}
-                </div>
-                {showUserMenu && (
-                  <div className="user-dropdown">
-                    <button 
-                      onClick={handleLogout} 
-                      className="dropdown-item"
-                    >
-                      <FontAwesomeIcon icon={faSignOutAlt} />
-                      <span>Cerrar Sesión</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header Independiente */}
+      <AdminHeader />
 
-      <div className="admin-content">
-        <div className="container">
-          <div className="products-table-container">
-            <div className="admin-actions">
-              <h2 className="section-title">Gestión de Productos</h2>
-              <button onClick={openAddModal} className="btn-add-product">
-                <FontAwesomeIcon icon={faPlus} />
-                <span>Agregar Producto</span>
-              </button>
-            </div>
+      {/* Contenido Principal */}
+      <div className="flex-1 py-12">
+        <div className="container mx-auto px-4">
+          
+          <StatsCards products={products} />
 
-            {loading ? (
-              <div className="loading-container">
-                <FontAwesomeIcon icon={faSpinner} spin size="2x" />
-                <p>Cargando productos...</p>
-              </div>
-            ) : products.length === 0 ? (
-              <div className="empty-state">
-                <FontAwesomeIcon icon={faBoxOpen} size="3x" />
-                <h3>No hay productos</h3>
-                <p>Comienza agregando tu primer producto</p>
-                <button onClick={openAddModal} className="btn-add-product">
-                  <FontAwesomeIcon icon={faPlus} />
-                  <span>Agregar Primer Producto</span>
-                </button>
-              </div>
-            ) : (
-              <table className="products-table">
-                <thead>
-                  <tr>
-                    <th>Imagen</th>
-                    <th>Marca</th>
-                    <th>Modelo</th>
-                    <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Descuento</th>
-                    <th>Tallas</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map(product => (
-                    <tr key={product.id}>
-                      <td className="product-image-cell">
-                        <img 
-                          src={getProductImage(product) || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop'}
-                          alt={product.model}
-                          className="product-thumbnail"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.src = 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop'
-                          }}
-                        />
-                      </td>
-                      <td>{product.brand}</td>
-                      <td>{product.model}</td>
-                      <td>{product.category}</td>
-                      <td>{formatPrice(product.price)}</td>
-                      <td>
-                        {product.discount > 0 ? (
-                          <span className="state-badge state-badge-with-discount">
-                            -{product.discount}%
-                          </span>
-                        ) : (
-                          <span className="text-muted">—</span>
-                        )}
-                      </td>
-                      <td>
-                        <div className="sizes-display">
-                          {product.sizes && product.sizes.length > 0 ? (
-                            product.sizes.slice(0, 3).map((size, index) => (
-                              <span key={index} className="size-tag">
-                                {size}
-                              </span>
-                            ))
-                          ) : (
-                            <span className="text-muted">Sin tallas</span>
-                          )}
-                          {product.sizes && product.sizes.length > 3 && (
-                            <span className="size-tag size-tag-more">
-                              +{product.sizes.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="state-badges-container">
-                          {product.isNew && (
-                            <span className="state-badge state-badge-new">NUEVO</span>
-                          )}
-                          {product.isFeatured && (
-                            <span className="state-badge state-badge-featured">DESTACADO</span>
-                          )}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="product-actions">
-                          <button 
-                            onClick={() => openEditModal(product)}
-                            className="btn-action btn-edit"
-                            title="Editar producto"
-                          >
-                            <FontAwesomeIcon icon={faEdit} />
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(product.id)}
-                            className="btn-action btn-delete"
-                            title="Eliminar producto"
-                          >
-                            <FontAwesomeIcon icon={faTrash} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+          <ProductTable 
+            products={products}
+            loading={loading}
+            onEdit={openEditModal}
+            onDelete={handleDelete}
+            onAdd={openAddModal}
+          />
         </div>
       </div>
 
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">
-                {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
-              </h2>
-              <button onClick={closeModal} className="btn-close-modal">
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} noValidate>
-              <div className="modal-body">
-                <div className="product-form">
-
-                  <div className="form-group">
-                    <label className="form-label">Imagen del Producto *</label>
-                    <div className="image-upload-container">
-                      {imagePreview ? (
-                        <div className="image-preview">
-                          <img src={imagePreview} alt="Preview" />
-                          <button
-                            type="button"
-                            onClick={removeImage}
-                            className="btn-remove-image"
-                            title="Remover imagen"
-                          >
-                            <FontAwesomeIcon icon={faX} />
-                          </button>
-                        </div>
-                      ) : (
-                        <label className="image-upload-area">
-                          <div className="upload-content">
-                            <FontAwesomeIcon icon={faImage} className="upload-icon" />
-                            <span className="upload-text">Haz clic para subir una imagen</span>
-                            <small>o arrastra aquí</small>
-                          </div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="file-input"
-                          />
-                        </label>
-                      )}
-                    </div>
-                    {errors.image && <span className="error-message">{errors.image}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Marca *</label>
-                    <input
-                      type="text"
-                      name="brand"
-                      className="form-input"
-                      placeholder="Nike, Adidas..."
-                      value={formData.brand}
-                      onChange={handleInputChange}
-                    />
-                    {errors.brand && <span className="error-message">{errors.brand}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Modelo *</label>
-                    <input
-                      type="text"
-                      name="model"
-                      className="form-input"
-                      placeholder="Air Max 270"
-                      value={formData.model}
-                      onChange={handleInputChange}
-                    />
-                    {errors.model && <span className="error-message">{errors.model}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Categoría</label>
-                    <select
-                      name="category"
-                      className="form-input"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                    >
-                      <option value={PRODUCT_CATEGORIES.HOMBRE}>Hombre</option>
-                      <option value={PRODUCT_CATEGORIES.MUJER}>Mujer</option>
-                      <option value={PRODUCT_CATEGORIES.GORRAS}>Gorras</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Precio (MXN) *</label>
-                    <input
-                      type="number"
-                      name="price"
-                      className="form-input"
-                      placeholder="2999"
-                      value={formData.price}
-                      onChange={handleInputChange}
-                      min="0"
-                      step="0.01"
-                    />
-                    {errors.price && <span className="error-message">{errors.price}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Descuento (%)</label>
-                    <input
-                      type="number"
-                      name="discount"
-                      className="form-input"
-                      value={formData.discount}
-                      onChange={handleInputChange}
-                      min="0"
-                      max="100"
-                    />
-                    {errors.discount && <span className="error-message">{errors.discount}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Tallas *</label>
-                    <div className="sizes-selector">
-                      {availableSizes.map(size => (
-                        <button
-                          key={size}
-                          type="button"
-                          onClick={() => handleSizeToggle(size)}
-                          className={`size-button ${formData.sizes.includes(size) ? 'size-button-active' : ''}`}
-                          disabled={formData.category === PRODUCT_CATEGORIES.GORRAS}
-                        >
-                          {size}
-                        </button>
-                      ))}
-                    </div>
-                    {errors.sizes && <span className="error-message">{errors.sizes}</span>}
-                    {formData.sizes.length > 0 && (
-                      <div className="sizes-selected">
-                        <small>Seleccionadas: {formData.sizes.join(', ')}</small>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Descripción *</label>
-                    <textarea
-                      name="description"
-                      className="form-input"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows="4"
-                    />
-                    {errors.description && <span className="error-message">{errors.description}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        name="isNew"
-                        checked={formData.isNew}
-                        onChange={handleInputChange}
-                      />
-                      <span>Marcar como NUEVO</span>
-                    </label>
-                  </div>
-
-                  <div className="form-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        name="isFeatured"
-                        checked={formData.isFeatured}
-                        onChange={handleInputChange}
-                      />
-                      <span>Marcar como DESTACADO</span>
-                    </label>
-                  </div>
-
-                </div>
-              </div>
-
-              <div className="modal-actions">
-                <button 
-                  type="button"
-                  onClick={closeModal} 
-                  className="btn-cancel"
-                  disabled={saving}
-                >
-                  Cancelar
-                </button>
-                <button 
-                  type="submit" 
-                  className="btn-save"
-                  disabled={saving}
-                >
-                  {saving ? (
-                    <>
-                      <FontAwesomeIcon icon={faSpinner} spin />
-                      <span>Guardando...</span>
-                    </>
-                  ) : (
-                    editingProduct ? 'Guardar Cambios' : 'Crear Producto'
-                  )}
-                </button>
-              </div>
-
-            </form>
-
-          </div>
-        </div>
-      )}
+      {/* Modal de Producto */}
+      <ProductModal 
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        isEditing={!!editingProduct}
+        saving={saving}
+        formData={formData}
+        formErrors={errors}
+        imagePreview={imagePreview}
+        onInputChange={handleInputChange}
+        onImageChange={handleImageChange}
+        onRemoveImage={removeImage}
+        onSizeToggle={handleSizeToggle}
+        onSubmit={handleSubmit}
+      />
     </div>
   )
 }
