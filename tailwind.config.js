@@ -33,6 +33,14 @@ export default {
         '4xl': '2.25rem',
         '5xl': '3rem',
       },
+      fontWeight: {
+        light: '300',
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+        extrabold: '800',
+      },
       spacing: {
         'xs': '0.25rem',
         'sm': '0.5rem',
@@ -69,6 +77,49 @@ export default {
         'modal': '1050',
         'popover': '1060',
         'tooltip': '1070',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.3s ease-out',
+        'slide-in': 'slideIn 0.3s ease-out',
+        'slide-down': 'slideDown 0.2s ease-out',
+        'expand-search': 'expandSearchBar 0.3s ease-out',
+        'move-pattern': 'movePattern 20s linear infinite',
+        'spin-custom': 'spin 1s linear infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideIn: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        expandSearchBar: {
+          '0%': { opacity: '0', transform: 'translateY(-100%)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        movePattern: {
+          '0%': { transform: 'translate(0, 0)' },
+          '100%': { transform: 'translate(50px, 50px)' },
+        },
+      },
+      container: {
+        center: true,
+        padding: {
+          DEFAULT: '1.5rem',
+          md: '1rem',
+        },
+        screens: {
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1200px',
+        },
       },
     },
   },

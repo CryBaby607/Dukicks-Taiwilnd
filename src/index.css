@@ -1,7 +1,7 @@
-/* Import Google Fonts */
+/* Importar Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap');
 
-/* Tailwind directives */
+/* Directivas de Tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,11 +29,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-dark-gray;
+    @apply bg-gray rounded-full hover:bg-dark-gray;
   }
 
   /* Selection */
@@ -71,35 +67,19 @@
   }
 
   a {
-    @apply font-text text-secondary no-underline transition-colors duration-base;
-  }
-
-  a:hover {
-    @apply text-accent underline;
+    @apply font-text text-secondary no-underline transition-colors duration-base hover:text-accent hover:underline;
   }
 
   button {
     @apply cursor-pointer border-none font-semibold rounded-md transition-all duration-base text-base px-lg py-sm;
-  }
-
-  button:active {
-    @apply scale-[0.98];
-  }
-
-  button:disabled {
-    @apply opacity-60 cursor-not-allowed;
+    @apply active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed;
   }
 
   input,
   textarea,
   select {
     @apply font-text text-base border border-gray rounded-md px-md py-sm transition-all duration-base;
-  }
-
-  input:focus,
-  textarea:focus,
-  select:focus {
-    @apply outline-none border-secondary ring-4 ring-secondary/10;
+    @apply focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/10;
   }
 
   textarea {
@@ -147,88 +127,28 @@
 }
 
 @layer utilities {
-  /* Custom animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
+  /* Responsive typography */
+  @media (max-width: 1024px) {
+    h1 {
+      @apply text-[2.25rem];
     }
-    to {
-      opacity: 1;
+    h2 {
+      @apply text-[1.875rem];
     }
-  }
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    h3 {
+      @apply text-[1.5rem];
     }
   }
 
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
+  @media (max-width: 768px) {
+    h1 {
+      @apply text-[1.875rem];
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    h2 {
+      @apply text-[1.5rem];
     }
-  }
-
-  @keyframes expandSearchBar {
-    from {
-      opacity: 0;
-      transform: translateY(-100%);
+    h3 {
+      @apply text-[1.25rem];
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes movePattern {
-    0% {
-      transform: translate(0, 0);
-    }
-    100% {
-      transform: translate(50px, 50px);
-    }
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
-  }
-
-  .animate-slide-in {
-    animation: slideIn 0.3s ease-out;
-  }
-
-  .animate-slide-down {
-    animation: slideDown 0.2s ease-out;
-  }
-
-  .animate-expand-search {
-    animation: expandSearchBar 0.3s ease-out;
-  }
-
-  .animate-move-pattern {
-    animation: movePattern 20s linear infinite;
-  }
-
-  .animate-spin-custom {
-    animation: spin 1s linear infinite;
   }
 }

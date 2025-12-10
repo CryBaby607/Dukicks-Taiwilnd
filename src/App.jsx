@@ -1,8 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import './config/fontawesome'
 import './styles/variables.css'
-import './styles/typography.css'
-import './styles/global.css'
 
 import { CartProvider } from './context/CartContext'
 import { AdminProvider } from './context/AdminContext'
