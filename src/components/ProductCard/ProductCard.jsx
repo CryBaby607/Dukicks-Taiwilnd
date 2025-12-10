@@ -11,6 +11,7 @@ function ProductCard({
   const productName = getProductName(product)
   const productImage = getProductImage(product)
 
+  // Determinar clases según la variante
   const isFeatured = variant === 'featured'
   const isCompact = variant === 'compact'
 
@@ -22,6 +23,7 @@ function ProductCard({
         ${isCompact ? 'flex-row' : ''}
       `}>
         
+        {/* Badges (Descuento / Nuevo) */}
         {(product.discount > 0 || product.isNew) && (
           <div className={`
             absolute z-10 flex flex-col gap-1
@@ -46,6 +48,7 @@ function ProductCard({
           </div>
         )}
 
+        {/* Contenedor de Imagen */}
         <div className={`
           relative overflow-hidden bg-light shrink-0
           ${isFeatured ? 'h-[320px]' : ''}
@@ -59,6 +62,7 @@ function ProductCard({
           />
         </div>
 
+        {/* Información del Producto */}
         <div className={`
           flex flex-col flex-1
           ${isFeatured ? 'p-8 gap-4' : 'p-6 gap-3'}
@@ -88,6 +92,7 @@ function ProductCard({
             </h3>
           </div>
 
+          {/* Descripción solo en Featured */}
           {isFeatured && product.description && (
             <p className="text-sm text-gray leading-relaxed m-0 line-clamp-2">
               {product.description}

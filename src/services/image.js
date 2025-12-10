@@ -1,4 +1,4 @@
-import { validateImageFile } from '../helpers/validation' //
+import { validateImageFile } from '../helpers/validation'
 
 export const uploadImageToCloudinary = async (imageFile) => {
   try {
