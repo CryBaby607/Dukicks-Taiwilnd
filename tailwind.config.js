@@ -7,16 +7,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Colores de marca únicos
         primary: '#111111',
         secondary: '#2563EB',
         accent: '#3a86ff',
-        light: '#f8f9fa',
-        'custom-gray': '#6c757d',
         'dark-gray': '#343a40',
-        success: '#10b981',
-        warning: '#f59e0b',
-        error: '#ef4444',
-        info: '#06b6d4',
+        light: '#f8f9fa',
+        
+        // Colores de estado (aliases para mantener nombres semánticos)
+        success: '#10b981',  // green-500
+        warning: '#f59e0b',  // amber-500
+        error: '#ef4444',    // red-500
+        info: '#06b6d4',     // cyan-500
       },
       fontFamily: {
         text: ['Montserrat', 'sans-serif'],

@@ -30,7 +30,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-custom-gray rounded-full transition-colors hover:bg-dark-gray;
+    @apply bg-gray-500 rounded-full transition-colors hover:bg-dark-gray;
   }
 
   /* Selection */
