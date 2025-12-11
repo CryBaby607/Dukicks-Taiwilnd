@@ -7,7 +7,7 @@ function AdminRoute({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-light">
-        <p className="text-lg text-gray">Verificando acceso...</p>
+        <p className="text-lg text-gray-600">Verificando acceso...</p>
       </div>
     )
   }

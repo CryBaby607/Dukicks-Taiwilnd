@@ -69,7 +69,7 @@ function ProductCard({
           ${isCompact ? 'p-4' : ''}
         `}>
           {showCategory && product.category && (
-            <span className="text-xs font-semibold text-gray uppercase tracking-wide">
+            <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
               {product.category}
             </span>
           )}
@@ -94,7 +94,7 @@ function ProductCard({
 
           {/* Descripción solo en Featured */}
           {isFeatured && product.description && (
-            <p className="text-sm text-gray leading-relaxed m-0 line-clamp-2">
+            <p className="text-sm text-gray-600 leading-relaxed m-0 line-clamp-2">
               {product.description}
             </p>
           )}
@@ -102,7 +102,7 @@ function ProductCard({
           <div className="flex items-center gap-3 flex-wrap mt-auto">
             {product.discount > 0 ? (
               <>
-                <span className="text-base text-gray line-through font-normal">
+                <span className="text-base text-gray-600 line-through font-normal">
                   {formatPrice(product.price)}
                 </span>
                 <span className={`font-bold text-accent ${isCompact ? 'text-base' : 'text-xl'}`}>

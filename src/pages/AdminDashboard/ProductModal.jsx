@@ -30,7 +30,7 @@ function ProductModal({
           </h2>
           <button 
             onClick={onClose} 
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 hover:text-error transition-colors text-gray"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 hover:text-error transition-colors text-gray-600"
           >
             <FontAwesomeIcon icon={faTimes} />
           </button>
@@ -57,7 +57,7 @@ function ProductModal({
                 <label className="flex flex-col items-center cursor-pointer w-full h-full">
                   <FontAwesomeIcon icon={faImage} className="text-4xl text-accent mb-2" />
                   <span className="font-semibold text-primary">Subir Imagen</span>
-                  <small className="text-gray">Click o arrastra aquí</small>
+                  <small className="text-gray-600">Click o arrastra aquí</small>
                   <input type="file" accept="image/*" onChange={onImageChange} className="hidden" />
                 </label>
               )}

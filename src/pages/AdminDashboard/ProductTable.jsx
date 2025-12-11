@@ -20,7 +20,7 @@ function ProductTable({ products, loading, onEdit, onDelete, onAdd }) {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center p-16 text-gray">
+        <div className="flex flex-col items-center justify-center p-16 text-gray-600">
           <FontAwesomeIcon icon={faSpinner} spin size="2x" className="mb-4 text-accent" />
           <p>Cargando productos...</p>
         </div>
@@ -28,7 +28,7 @@ function ProductTable({ products, loading, onEdit, onDelete, onAdd }) {
         <div className="text-center p-16">
           <FontAwesomeIcon icon={faBoxOpen} size="3x" className="text-gray-300 mb-4" />
           <h3 className="font-title text-2xl font-bold text-primary mb-2">No hay productos</h3>
-          <p className="text-gray mb-6">Comienza agregando tu primer producto</p>
+          <p className="text-gray-600 mb-6">Comienza agregando tu primer producto</p>
           <button onClick={onAdd} className="btn btn-primary">
             Agregar Primer Producto
           </button>
@@ -64,7 +64,7 @@ function ProductTable({ products, loading, onEdit, onDelete, onAdd }) {
                       <span className="text-sm text-dark-gray">{product.model}</span>
                     </div>
                   </td>
-                  <td className="p-4 text-sm text-gray font-medium">{product.category}</td>
+                  <td className="p-4 text-sm text-gray-600 font-medium">{product.category}</td>
                   <td className="p-4 font-bold text-accent">
                     {formatPrice(product.price)}
                     {product.discount > 0 && (

@@ -89,12 +89,12 @@ function Login() {
                 focus-within:bg-white focus-within:border-accent focus-within:shadow-md
                 ${touched.email && !isEmailValid && email ? 'border-error bg-red-50' : 'border-transparent'}
               `}>
-                <FontAwesomeIcon icon={faEnvelope} className="text-gray text-base mr-3 shrink-0" />
+                <FontAwesomeIcon icon={faEnvelope} className="text-gray-600 text-base mr-3 shrink-0" />
                 <input
                   id="email"
                   type="email"
                   placeholder="admin@dukicks.com"
-                  className="flex-1 bg-transparent border-none outline-none py-3 text-base text-primary font-text placeholder:text-gray/70 disabled:cursor-not-allowed disabled:text-gray"
+                  className="flex-1 bg-transparent border-none outline-none py-3 text-base text-primary font-text placeholder:text-gray-600/70 disabled:cursor-not-allowed disabled:text-gray-600"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onBlur={() => handleBlur('email')}
@@ -118,12 +118,12 @@ function Login() {
                 focus-within:bg-white focus-within:border-accent focus-within:shadow-md
                 ${touched.password && !isPasswordValid && password ? 'border-error bg-red-50' : 'border-transparent'}
               `}>
-                <FontAwesomeIcon icon={faLock} className="text-gray text-base mr-3 shrink-0" />
+                <FontAwesomeIcon icon={faLock} className="text-gray-600 text-base mr-3 shrink-0" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="flex-1 bg-transparent border-none outline-none py-3 text-base text-primary font-text placeholder:text-gray/70 disabled:cursor-not-allowed disabled:text-gray"
+                  className="flex-1 bg-transparent border-none outline-none py-3 text-base text-primary font-text placeholder:text-gray-600/70 disabled:cursor-not-allowed disabled:text-gray-600"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onBlur={() => handleBlur('password')}
@@ -131,7 +131,7 @@ function Login() {
                 />
                 <button
                   type="button"
-                  className="bg-transparent border-none text-gray cursor-pointer p-2 ml-1 rounded-md transition-all flex items-center justify-center text-base hover:text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
+                  className="bg-transparent border-none text-gray-600 cursor-pointer p-2 ml-1 rounded-md transition-all flex items-center justify-center text-base hover:text-accent hover:bg-accent/10 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   disabled={loading}

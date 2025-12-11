@@ -89,7 +89,7 @@ function Home() {
                 />
               ))
             ) : (
-              <p className="col-span-full text-center text-gray">Cargando destacados...</p>
+              <p className="col-span-full text-center text-gray-600">Cargando destacados...</p>
             )}
           </div>
         </div>
@@ -160,7 +160,7 @@ function Home() {
                   <span className="font-title text-4xl font-bold text-accent leading-none">
                     {stat.number}
                   </span>
-                  <span className="text-sm font-medium text-gray uppercase tracking-wide">
+                  <span className="text-sm font-medium text-gray-600 uppercase tracking-wide">
                     {stat.label}
                   </span>
                 </div>

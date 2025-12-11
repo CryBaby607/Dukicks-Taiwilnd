@@ -29,7 +29,7 @@ function Cart() {
       <div className="min-h-screen py-16 flex items-center justify-center bg-light">
         <div className="text-center max-w-[500px] px-4">
           <h1 className="font-title text-3xl font-bold text-primary mb-4">Tu carrito está vacío</h1>
-          <p className="text-lg text-gray mb-8">
+          <p className="text-lg text-gray-600 mb-8">
             Agrega productos para comenzar tu compra y lucir increíble.
           </p>
           <a href="/" className="btn btn-primary">
@@ -78,7 +78,7 @@ function Cart() {
                   {/* Info */}
                   <div className="flex flex-col gap-1">
                     <h3 className="font-title text-base font-semibold text-primary m-0">{item.name}</h3>
-                    <p className="text-xs text-gray uppercase tracking-wide m-0">{item.category}</p>
+                    <p className="text-xs text-gray-600 uppercase tracking-wide m-0">{item.category}</p>
                     {item.size && (
                       <p className="text-sm font-medium text-dark-gray m-0">Talla: {item.size}</p>
                     )}
@@ -86,13 +86,13 @@ function Cart() {
 
                   {/* Precio Unitario */}
                   <div className="flex flex-row md:flex-col justify-between items-center md:text-center">
-                    <span className="text-xs text-gray font-semibold uppercase md:hidden">Precio</span>
+                    <span className="text-xs text-gray-600 font-semibold uppercase md:hidden">Precio</span>
                     <span className="text-lg font-bold text-primary">{formatPrice(item.price)}</span>
                   </div>
 
                   {/* Cantidad */}
                   <div className="flex flex-row md:flex-col justify-between items-center md:items-center">
-                    <span className="text-xs text-gray font-semibold uppercase md:hidden">Cantidad</span>
+                    <span className="text-xs text-gray-600 font-semibold uppercase md:hidden">Cantidad</span>
                     <input
                       type="number"
                       min="1"
@@ -105,7 +105,7 @@ function Cart() {
 
                   {/* Subtotal */}
                   <div className="flex flex-row md:flex-col justify-between items-center md:text-center">
-                    <span className="text-xs text-gray font-semibold uppercase md:hidden">Subtotal</span>
+                    <span className="text-xs text-gray-600 font-semibold uppercase md:hidden">Subtotal</span>
                     <span className="text-lg font-bold text-accent">
                       {formatPrice(item.price * item.quantity)}
                     </span>
@@ -134,7 +134,7 @@ function Cart() {
               </h2>
 
               <div className="flex justify-between items-center">
-                <span className="text-base text-gray font-semibold">Productos ({itemCount})</span>
+                <span className="text-base text-gray-600 font-semibold">Productos ({itemCount})</span>
                 <span className="text-lg font-bold text-primary">{formatPrice(subtotal)}</span>
               </div>
 
@@ -160,7 +160,7 @@ function Cart() {
                 Seguir Comprando
               </a>
 
-              <p className="text-xs text-center text-gray mt-2">
+              <p className="text-xs text-center text-gray-600 mt-2">
                 Al hacer clic, se abrirá WhatsApp con el detalle de tu pedido para finalizar la compra.
               </p>
             </div>

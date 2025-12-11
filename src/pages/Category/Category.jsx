@@ -64,7 +64,7 @@ function CategoryPage({ category }) {
                     aria-pressed={selectedBrand === brand}
                   >
                     {brand}
-                    <span className={`text-sm font-semibold ${selectedBrand === brand ? 'text-white/90' : 'text-gray/80'}`}>
+                    <span className={`text-sm font-semibold ${selectedBrand === brand ? 'text-white/90' : 'text-gray-600/80'}`}>
                       ({brand === 'Todas'
                         ? products.length
                         : products.filter(p => p.brand === brand).length})
@@ -97,7 +97,7 @@ function CategoryPage({ category }) {
           {/* Contenido Principal */}
           <section className="flex flex-col gap-8">
             <div className="bg-white p-4 rounded-md shadow-sm">
-              <p className="text-base text-gray font-semibold m-0">
+              <p className="text-base text-gray-600 font-semibold m-0">
                 Mostrando {sortedProducts.length} de {products.length} productos
               </p>
             </div>
@@ -115,7 +115,7 @@ function CategoryPage({ category }) {
                 ))
               ) : (
                 <div className="col-span-full text-center p-12 bg-white rounded-lg">
-                  <p className="text-lg text-gray m-0">
+                  <p className="text-lg text-gray-600 m-0">
                     No hay productos disponibles con los filtros seleccionados
                   </p>
                 </div>

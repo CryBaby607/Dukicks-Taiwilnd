@@ -123,7 +123,7 @@ function ProductDetail() {
             <div className="flex items-center gap-4 flex-wrap py-6 border-t border-b border-light">
               {product.discount > 0 ? (
                 <>
-                  <span className="text-xl text-gray line-through decoration-1">
+                  <span className="text-xl text-gray-600 line-through decoration-1">
                     {formatPrice(product.price)}
                   </span>
                   <span className="text-4xl font-bold text-accent">

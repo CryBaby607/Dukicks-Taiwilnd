@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component {
             <h1 className="text-3xl font-title font-bold text-primary mb-4">
               Algo salió mal
             </h1>
-            <p className="text-base text-gray leading-relaxed mb-8">
+            <p className="text-base text-gray-600 leading-relaxed mb-8">
               Disculpa, ocurrió un error inesperado. Por favor, intenta recargar la página.
             </p>
             <button

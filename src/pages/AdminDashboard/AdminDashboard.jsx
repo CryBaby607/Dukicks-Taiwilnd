@@ -229,7 +229,7 @@ function AdminDashboard() {
               <h2 className="font-title text-3xl font-bold text-primary tracking-tight">
                 Panel de Control
               </h2>
-              <p className="text-gray text-sm mt-1">Bienvenido de nuevo al administrador.</p>
+              <p className="text-gray-600 text-sm mt-1">Bienvenido de nuevo al administrador.</p>
             </div>
 
             <StatsCards products={products} />
